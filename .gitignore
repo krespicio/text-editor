@@ -60,3 +60,6 @@ evn.sh
 
 # next.js build output
 .next
+
+# DS_STORE
+*DS_Store
