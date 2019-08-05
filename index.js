@@ -10,12 +10,13 @@ const crypto = require("crypto");
 const MongoStore = require("connect-mongo")(session);
 const mongoose = require("mongoose");
 const cors = require("cors");
-const auth = require("./routes/Auth");
+
 // Import Model
 
 const app = express();
 
 // Import the Routes
+const auth = require("./routes/Auth");
 
 // Ensure there is a pasword
 if (!process.env.SECRET) {
@@ -93,8 +94,7 @@ app.use(passport.session());
 
 // Routes
 app.use("/", auth(passport));
-app.use(newsRouter);
-app.use(statsRoute);
+
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

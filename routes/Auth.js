@@ -3,7 +3,7 @@ const router = express.Router();
 const crypto = require("crypto");
 
 // User Mongo
-// const User = require("../models/User");
+const User = require("../models");
 
 function hashPassword(password) {
 	let hash = crypto.createHash("sha256");
@@ -39,14 +39,14 @@ module.exports = function(passport) {
 		})
 	);
 
-	router.get("/user", async (req, res) => {
-		console.log(req.user);
-		if (req.user) {
-			res.send({ loggedIn: true });
-		} else {
-			res.send({ loggedIn: false });
-		}
-	});
+	// router.get("/user", async (req, res) => {
+	// 	console.log(req.user);
+	// 	if (req.user) {
+	// 		res.send({ loggedIn: true });
+	// 	} else {
+	// 		res.send({ loggedIn: false });
+	// 	}
+	// });
 
 	router.get("/login/success", (req, res) => {
 		res.json({ success: true });
@@ -56,11 +56,8 @@ module.exports = function(passport) {
 		res.json({ success: false });
 	});
 
-	return router;
-};
-
-//GET Logout page
-router.get("/logout", function(req, res) {
+	//GET Logout page
+	router.get("/logout", function(req, res) {
     req.logout();
     res.json({
       success: true,
@@ -78,3 +75,7 @@ router.get("/logout", function(req, res) {
     }
     next();
   });
+
+	return router;
+};
+
