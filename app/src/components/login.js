@@ -7,7 +7,8 @@ export default function Login() {
 	const [isLogin, setIsLogin] = useState("");
 	const [errorText, setErrorText] = useState("");
 
-	const postLogin = async () => {
+	const postLogin = async (e) => {
+		e.preventDefault();
 		const response = await fetch("http://localhost:5000/login", {
 			method: "POST",
 			headers: {
@@ -28,17 +29,12 @@ export default function Login() {
 	};
 
 	if (isLogin) {
-		// return <Redirect to="/"> </Redirect>;
+		console.log('LOGGED IN BITCH')
+		return <h1>soiaefhoisefhiohefio</h1>
 	} else {
 		return (
 			<div
-				style={{
-					justifyContent: "center",
-					alignItems: "center",
-					height: "100%",
-					display: "flex",
-					flexDirection: "column",
-				}}>
+				style={styles}>
 				<h3 style={{ textAlign: "center" }}>Login</h3>
 				{errorText && <p>{errorText}</p>}
 				<form className="loginForm" onSubmit={e => postLogin(e)}>
@@ -70,8 +66,7 @@ export default function Login() {
 					</div>
 					<div style={{ display: "flex", justifyContent: "space-between" }}>
 						<input
-							className="ghost-button"
-							style={{ width: "20%" }}
+							style={{ width: "50%" }}
 							type="submit"
 							value="Login"
 						/>
@@ -85,6 +80,11 @@ export default function Login() {
 	}
 }
 
-const styles = {
-	//
-};
+const styles = 
+	{
+		justifyContent: "center",
+		alignItems: "center",
+		height: "100%",
+		display: "flex",
+		flexDirection: "column",
+	};

@@ -3,8 +3,7 @@ const router = express.Router();
 const crypto = require("crypto");
 
 // User Mongo
-const models = require("../models");
-const User = models.User;
+const { User } = require("../models");
 
 function hashPassword(password) {
 	let hash = crypto.createHash("sha256");
@@ -13,24 +12,28 @@ function hashPassword(password) {
 }
 
 module.exports = function(passport) {
-	router.post("/signup", async (req, res) => {
+	router.post("/signup", function (req, res) {
 		console.log("in here to sign up dad");
-		const found = await User.findOne({ username: req.body.username }, (err, user) => {
-			if (!err && user) {
-				return user;
-			}
-		});
-		if (!found) {
-			const newUser = new User({
+		const newUser = new User({
 				username: req.body.username,
 				password: hashPassword(req.body.password),
+				documents: []
 			});
-			newUser.save(() => console.log("bitch we saved"));
-			res.send({ success: true, error: "none" });
-		} else {
-			res.send({ success: false, error: "there is an existing user silly billy" });
-		}
+			console.log(newUser); 
+			newUser.save(function(err, result) {
+				console.log(err, result); 
+				console.log('hiii');
+				if (err) {
+					console.log('we be erroring')
+					res.json({success: false, error:err});
+				}
+				if (!err) {
+					console.log('mama i made it')
+					res.json({success: true, error: ''});
+				}
 	});
+}); 
+
 
 	router.post(
 		"/login",
