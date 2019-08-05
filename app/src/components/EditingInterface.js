@@ -16,6 +16,7 @@ class EditingInterface extends React.Component {
     this.toggleColor = toggledColor => this._toggleColor(toggledColor);
     this.focus = () => this.editor.focus();
     this._onClick = e => {
+      e.preventDefault();
       this.onChange(
         RichUtils.toggleInlineStyle(this.state.editorState, e.target.name)
       );
@@ -73,7 +74,11 @@ class EditingInterface extends React.Component {
             onToggle={this.toggleColor}
           />
           {textStyles.map(style => (
-            <button key={style} onClick={this._onClick.bind(this)} name={style}>
+            <button
+              key={style}
+              onMouseDown={this._onClick.bind(this)}
+              name={style}
+            >
               {style}
             </button>
           ))}
