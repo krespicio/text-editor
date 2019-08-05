@@ -10,7 +10,7 @@ const crypto = require("crypto");
 const MongoStore = require("connect-mongo")(session);
 const mongoose = require("mongoose");
 const cors = require("cors");
-const auth = require("./routes/Auth"); 
+const auth = require("./routes/Auth");
 // Import Model
 
 const app = express();
@@ -85,6 +85,8 @@ passport.use(
 		});
 	})
 );
+
+// ji
 
 app.use(passport.initialize());
 app.use(passport.session());
