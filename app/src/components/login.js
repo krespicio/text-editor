@@ -7,7 +7,8 @@ export default function Login() {
 	const [isLogin, setIsLogin] = useState("");
 	const [errorText, setErrorText] = useState("");
 
-	const postLogin = async () => {
+	const postLogin = async (e) => {
+		e.preventDefault();
 		const response = await fetch("http://localhost:5000/login", {
 			method: "POST",
 			headers: {
@@ -28,7 +29,8 @@ export default function Login() {
 	};
 
 	if (isLogin) {
-		// return <Redirect to="/"> </Redirect>;
+		console.log('LOGGED IN BITCH')
+		return <h1>soiaefhoisefhiohefio</h1>
 	} else {
 		return (
 			<div

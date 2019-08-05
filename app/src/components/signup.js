@@ -16,7 +16,7 @@ export default function Signup() {
 
 			body: JSON.stringify({
 				username,
-				password,
+				password
 			}),
 		})
 			.then(response => response.json())

@@ -4,6 +4,7 @@
 	"private": true,
 	"dependencies": {
 		"electron-dev": "^1.0.1",
+		"nodemon": "^1.19.1",
 		"react": "^16.8.6",
 		"react-dom": "^16.8.6",
 		"react-router-dom": "^5.0.1",
@@ -14,7 +15,8 @@
 		"build": "react-scripts build",
 		"test": "react-scripts test",
 		"eject": "react-scripts eject",
-		"electron-dev": "concurrently \"npm run start\" \"wait-on http://localhost:3000 && electron .\""
+		"electron-dev": "concurrently \"npm run start\" \"wait-on http://localhost:3000 && electron .\"",
+		"server": "nodemon ./index.js"
 	},
 	"eslintConfig": {
 		"extends": "react-app"
