@@ -3,7 +3,7 @@ const router = express.Router();
 const crypto = require("crypto");
 
 // User Mongo
-const User = require("../models/User");
+// const User = require("../models/User");
 
 function hashPassword(password) {
 	let hash = crypto.createHash("sha256");
@@ -58,3 +58,23 @@ module.exports = function(passport) {
 
 	return router;
 };
+
+//GET Logout page
+router.get("/logout", function(req, res) {
+    req.logout();
+    res.json({
+      success: true,
+      error: ""
+    });
+  });
+
+  router.use((req, res, next) => {
+    if (!req.user) {
+      res.status(401).json({
+        success: false,
+        error: "Not authorized"
+      });
+      return;
+    }
+    next();
+  });
