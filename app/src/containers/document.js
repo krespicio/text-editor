@@ -12,27 +12,32 @@ class Document extends React.Component {
     return (
       <div
         style={{
-          border: "1px solid black",
-          backgroundColor: "grey",
-          maxWidth: "90vw",
           display: "flex"
         }}
         name="document"
         id="document"
       >
-        <Button variant="secondary" size="sm">
-          {" "}
-          Document Portal
-        </Button>
-        <h3> DOCUMENT TITLE HERE </h3>
-        <h6> DOCUMENT ID HERE </h6>
-        <Toolbar />
-        <Body />
+        <div style={{ justifyContent: "flex-start" }}>
+          <button variant="secondary" size="sm">
+            {" "}
+            Document Portal
+          </button>
+        </div>
+        <div style={{ textAlign: "center"}}>
+          <h3> DOCUMENT TITLE HERE </h3>
+        </div>
+        <div style >
+          <h6> DOCUMENT ID HERE </h6>
+        </div>
+        <div>
+          <Toolbar />
+          <Body />
+        </div>
         <div style={{ justifyContent: "flex-end" }}>
-          <Button variant="success" size="sm">
+          <button variant="success" size="sm">
             {" "}
             Save Changes{" "}
-          </Button>
+          </button>
         </div>
       </div>
     );
