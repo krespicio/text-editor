@@ -7,6 +7,7 @@ class Document extends React.Component {
     super(props);
     this.state = {};
   }
+
   render() {
     return (
       <div style={styles.container} name="document" id="document">
