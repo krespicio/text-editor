@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Toolbar from "../components/toolbar";
-import Body from "../components/body";
+import EditingInterface from "../components/EditingInterface.js";
 
 class Document extends React.Component {
   constructor(props) {
@@ -10,38 +9,42 @@ class Document extends React.Component {
   }
   render() {
     return (
-      <div
-        style={{
-          display: "flex"
-        }}
-        name="document"
-        id="document"
-      >
-        <div style={{ justifyContent: "flex-start" }}>
-          <button variant="secondary" size="sm">
-            {" "}
-            Document Portal
-          </button>
-        </div>
-        <div style={{ textAlign: "center"}}>
-          <h3> DOCUMENT TITLE HERE </h3>
-        </div>
-        <div style >
-          <h6> DOCUMENT ID HERE </h6>
-        </div>
-        <div>
-          <Toolbar />
-          <Body />
-        </div>
-        <div style={{ justifyContent: "flex-end" }}>
-          <button variant="success" size="sm">
-            {" "}
-            Save Changes{" "}
-          </button>
+      <div style={styles.container} name="document" id="document">
+        <div style={styles.content}>
+          <div style={styles.portalButton}>
+            <button variant="secondary" size="sm">
+              {" "}
+              Document Portal
+            </button>
+          </div>
+          <div style={styles.title}>
+            <h2> DOCUMENT TITLE HERE </h2>
+          </div>
+          <div style={styles.subtitle}>
+            <h6> ID: DOCUMENT ID HERE </h6>
+          </div>
+          <div>
+            <EditingInterface />
+          </div>
         </div>
       </div>
     );
   }
 }
+
+const styles = {
+  container: {
+    display: "flex",
+    width: "90%",
+    margin: "auto"
+  },
+  content: {
+    flex: 1,
+    alignContent: "center"
+  },
+  portalButton: { justifyContent: "flex-start" },
+  title: { textAlign: "center" },
+  subtitle: { textAlign: "left" }
+};
 
 export default Document;
