@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import Toolbar from "../components/toolbar";
-import Body from "../components/body";
+import EditingInterface from "../components/EditingInterface";
+
 
 class Document extends React.Component {
   constructor(props) {
@@ -23,15 +23,14 @@ class Document extends React.Component {
             Document Portal
           </button>
         </div>
-        <div style={{ textAlign: "center"}}>
+        <div style={{ textAlign: "center" }}>
           <h3> DOCUMENT TITLE HERE </h3>
         </div>
-        <div style >
+        <div>
           <h6> DOCUMENT ID HERE </h6>
         </div>
         <div>
-          <Toolbar />
-          <Body />
+          <EditingInterface />
         </div>
         <div style={{ justifyContent: "flex-end" }}>
           <button variant="success" size="sm">
