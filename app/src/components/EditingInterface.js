@@ -19,7 +19,7 @@ class EditingInterface extends React.Component {
     if (newState) {
       this.onChange(newState);
       return "handled"
-    } 
+    }
     return "not handled"
   }
 
@@ -28,15 +28,15 @@ class EditingInterface extends React.Component {
       <div>
 
           {/* <button><FontAwesomeIcon icon={faCoffee} /></button> */}
-    
-        
+
+
         <div style={{border: '1px solid black', maxWidth: '80%', height: '80%'}}>
           <Editor editorState={this.state.editorState}
         onChange={this.onChange}
         handleKeyCommand={this.handleKeyCommand}/>
         </div>
 
-        
+
         <div style={styles.saveButton}>
           <button variant="success" size="sm">
             Save Changes
@@ -58,7 +58,7 @@ const styles = {
     height: '200px',
     margin: '0 auto'
   }
- 
+
 }
 
 export default EditingInterface;
