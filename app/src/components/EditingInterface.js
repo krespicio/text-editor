@@ -5,33 +5,24 @@ class EditingInterface extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-
+      input: ''
     }
   }
 
   render() {
     return (
       <div>
-        <div></div>
         <div>
-          <textarea>
-            <input type="text" onChange={(e) => this.setState(e.target.value)}></input>
+          <textarea type="text" onChange={(e) => this.setState({input: e.target.value})}>
           </textarea>
         </div>
         <div style={styles.saveButton}>
           <button variant="success" size="sm">
-       
             Save Changes
           </button>
         </div>
       </div>
     )
-  }
-}
-
-class Body extends React.Component {
-  render(){
-    
   }
 }
 
