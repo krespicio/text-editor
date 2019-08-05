@@ -13,7 +13,7 @@ class Document extends React.Component {
       <div style={styles.container} name="document" id="document">
         <div style={styles.content}>
           <div style={styles.portalButton}>
-            <button variant="secondary" size="sm">
+            <button color="secondary" size="sm">
               {" "}
               Document Portal
             </button>
