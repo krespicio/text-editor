@@ -32,13 +32,7 @@ export default function Login() {
 	} else {
 		return (
 			<div
-				style={{
-					justifyContent: "center",
-					alignItems: "center",
-					height: "100%",
-					display: "flex",
-					flexDirection: "column",
-				}}>
+				style={styles}>
 				<h3 style={{ textAlign: "center" }}>Login</h3>
 				{errorText && <p>{errorText}</p>}
 				<form className="loginForm" onSubmit={e => postLogin(e)}>
@@ -70,8 +64,7 @@ export default function Login() {
 					</div>
 					<div style={{ display: "flex", justifyContent: "space-between" }}>
 						<input
-							className="ghost-button"
-							style={{ width: "20%" }}
+							style={{ width: "50%" }}
 							type="submit"
 							value="Login"
 						/>
@@ -85,6 +78,11 @@ export default function Login() {
 	}
 }
 
-const styles = {
-	//
-};
+const styles = 
+	{
+		justifyContent: "center",
+		alignItems: "center",
+		height: "100%",
+		display: "flex",
+		flexDirection: "column",
+	};

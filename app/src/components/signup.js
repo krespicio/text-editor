@@ -36,11 +36,12 @@ export default function Signup() {
 	} else {
 		return (
 			<div style={styles}>
-				<h3 style={{ textAlign: "center" }}>Register</h3>
+				<h3 style={{ textAlign: "center" }}>Sign Up</h3>
 				<form className="signupForm" onSubmit={e => signup(e)}>
 					<div className="form-row">
 						<div className="form-group col-md-6">
-							<label>Username</label>
+							<label className="col-sm-2 col-form-label">Username</label>
+              <div className="col0-sm-10">
 							<input
 								className="form-control"
 								type="text"
@@ -50,8 +51,10 @@ export default function Signup() {
 								onChange={e => setUsername(e.target.value)}
 							/>
 						</div>
-						<div className="form-group col-md-6">
-							<label>Password</label>
+            </div>
+						<div className="form-group row">
+							<label className="col-sm-2 col-form-label">Password</label>
+              <div className = "col-sm-10">
 							<input
 								className="form-control"
 								type="password"
@@ -61,17 +64,29 @@ export default function Signup() {
 								onChange={e => setPassword(e.target.value)}
 							/>
 						</div>
-					</div>
-				</form>
-			</div>
-		);
-	}
+            </div> 
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <input
+              style={{ width: "50%" }}
+              className="ghost-button"
+              type="submit"
+              value="Sign up!"
+            />
+            <Link to="/login" style={{ textAlign: "right" }}>
+              Login Here!
+            </Link>
+          </div>
+        </div>
+      </form>
+    </div>
+  );
+}
 }
 
 const styles = {
-	justifyContent: "center",
-	alignItems: "center",
-	height: "100%",
-	display: "flex",
-	flexDirection: "column",
+justifyContent: "center",
+alignItems: "center",
+height: "100%",
+display: "flex",
+flexDirection: "column",
 };
