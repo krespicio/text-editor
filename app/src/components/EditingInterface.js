@@ -1,7 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { FaAlignLeft, FaAlignRight, FaAlignCenter, FaSave } from "react-icons/fa";
+import { FaAlignLeft, FaAlignRight, FaAlignCenter, FaSave, FaListOl, FaListUl } from "react-icons/fa";
 import { Editor, EditorState, RichUtils, Modifier } from "draft-js";
+import "../App.css"
 
 class EditingInterface extends React.Component {
 	constructor(props) {
@@ -68,10 +69,10 @@ class EditingInterface extends React.Component {
 		if (type === "CENTER") {
 			return "center";
 		}
-		if (type === "OL") {
-			return "ordered-list-item";
+		if (type === "ordered-list-item") {
+			return "right-ordered-list-item";
 		}
-		if (type === "UL") {
+		if (type === "unordered-list-item") {
 			return "unordered-list-item";
 		}
 	}
@@ -117,7 +118,10 @@ class EditingInterface extends React.Component {
 			{ name: "CENTER", icon: <FaAlignCenter /> },
 			{ name: "RIGHT", icon: <FaAlignRight /> },
 		];
-
+		const listStyles = [
+			{name: "ordered-list-item", icon: < FaListOl/>},
+			{name: "unordered-list-item", icon: < FaListUl/>}
+		]
 		return (
 			<div>
 				<div style={styles.toolbar}>
@@ -132,7 +136,7 @@ class EditingInterface extends React.Component {
 					))}
 					<button
 						onClick={() =>
-							this.styleWholeSelectedBlocksModifier(this.state.editorState)
+							this.styleWholeSelectedBlocksModifier(this.state.editorState, 'ordered-list-item')
 						}>
 						yeet
 					</button>
@@ -145,6 +149,22 @@ class EditingInterface extends React.Component {
 										this.state.editorState,
 										style.name,
 										paragraphStyles.filter(a => a !== style.name)
+									)
+								}
+								name={style.name}>
+								{style.icon}
+							</button>
+						);
+					})}
+					{listStyles.map(style => {
+						return (
+							<button
+								key={style.name}
+								onClick={() =>
+									this.styleWholeSelectedBlocksModifier(
+										this.state.editorState,
+										style.name,
+										listStyles.filter(a => a !== style.name)
 									)
 								}
 								name={style.name}>
