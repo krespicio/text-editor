@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import EditingInterface from "../components/EditingInterface.js";
+import { FaChevronLeft } from 'react-icons/fa';
 
 class Document extends React.Component {
   constructor(props) {
@@ -13,9 +14,9 @@ class Document extends React.Component {
       <div style={styles.container} name="document" id="document">
         <div style={styles.content}>
           <div style={styles.portalButton}>
-            <button variant="secondary" size="sm">
+            <button color="secondary" size="sm">
               {" "}
-              Document Portal
+              <FaChevronLeft /> Document Portal
             </button>
           </div>
           <div style={styles.title}>

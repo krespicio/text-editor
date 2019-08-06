@@ -10,6 +10,7 @@ const crypto = require("crypto");
 const MongoStore = require("connect-mongo")(session);
 const mongoose = require("mongoose");
 const cors = require("cors");
+const { User } = require("./models");
 
 // Import Model
 // Hello
@@ -32,8 +33,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(newsRouter);
-app.use(statsRoute);
+
 
 // Passport stuff
 app.use(
@@ -61,6 +61,7 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(id, done) {
 	User.findById(id, function(err, user) {
 		done(err, user);
+		console.log('k')
 	});
 });
 
@@ -70,12 +71,12 @@ passport.use(
 		User.findOne({ username: username }, function(err, user) {
 			// if there's an error, finish trying to authenticate (auth failed)
 			if (err) {
-				// console.log(err);
+				console.log(err);
 				return done(err);
 			}
 			// if no user present, auth failed
 			if (!user) {
-				// console.log(user);
+				console.log(user);
 				return done(null, false);
 			}
 			// if passwords do not match, auth failed
@@ -83,6 +84,7 @@ passport.use(
 				return done(null, false);
 			}
 			// auth has has succeeded
+			console.log('we good', user); 
 			return done(null, user);
 		});
 	})
@@ -96,6 +98,16 @@ app.use(passport.session());
 // Routes
 app.use("/", auth(passport));
 
+const REQUIRED_ENVS = ["MONGODB_URI"];
+
+REQUIRED_ENVS.forEach(function(el) {
+  if (!process.env[el]) throw new Error("Missing required env var " + el);
+});
+mongoose.connect(process.env.MONGODB_URI);
+mongoose.connection.on("open", () => console.log(`Connected to MongoDB!`));
+mongoose.connection.on('error',function (err) {  
+  console.log('Mongoose default connection error: ' + err);
+}); 
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

@@ -15,7 +15,8 @@ var userSchema = new Schema({
     documents: [
         {
             type: mongoose.Schema.ObjectId, 
-            ref: "Document"
+            ref: "Document",
+            required: false
         }
     ]
 }); 
