@@ -50,6 +50,12 @@ class EditingInterface extends React.Component {
     if (type === "CENTER") {
       return "center";
     }
+    if (type === "OL") {
+      return "ordered-list-item";
+    }
+    if (type === "UL") {
+      return "unordered-list-item";
+    }
   }
 
   styleWholeSelectedBlocksModifier(editorState, style, removeStyles) {
@@ -63,6 +69,11 @@ class EditingInterface extends React.Component {
 
   render() {
     const textStyles = ["BOLD", "ITALIC", "UNDERLINE", "CODE"];
+    const paragraphStyles = [
+      { name: "LEFT", icon: <FaAlignLeft /> },
+      { name: "CENTER", icon: <FaAlignCenter /> },
+      { name: "RIGHT", icon: <FaAlignRight /> }
+    ];
     const colorStyles = [
       "red",
       "orange",
@@ -73,11 +84,6 @@ class EditingInterface extends React.Component {
       "violet"
     ];
     const fontStyles = ["small", "medium", "large"];
-    const paragraphStyles = [
-      { name: "LEFT", icon: <FaAlignLeft /> },
-      { name: "CENTER", icon: <FaAlignCenter /> },
-      { name: "RIGHT", icon: <FaAlignRight /> }
-    ];
 
     return (
       <div>
