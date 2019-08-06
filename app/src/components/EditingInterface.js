@@ -1,7 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { FaAlignLeft, FaAlignRight, FaAlignCenter, FaSave } from "react-icons/fa";
+import {
+	FaAlignLeft,
+	FaAlignRight,
+	FaAlignCenter,
+	FaSave,
+	FaListOl,
+	FaListUl,
+} from "react-icons/fa";
 import { Editor, EditorState, RichUtils, Modifier } from "draft-js";
+import "../App.css";
 
 class EditingInterface extends React.Component {
 	constructor(props) {
