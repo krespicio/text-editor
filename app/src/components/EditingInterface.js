@@ -2,11 +2,25 @@ import React from "react";
 import ReactDOM from "react-dom";
 // import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import { faCoffee } from '@fortawesome/free-solid-svg-icons'
-import { Editor, EditorState, RichUtils } from "draft-js";
+import { Editor, EditorState, RichUtils, Modifier } from "draft-js";
+
+  // const styleMap = {
+  //   'LEFT': {
+  //     textAlign: "left"
+  //   },
+  //   'RIGHT': {
+  //     textAlign: "right",
+  //     backgroundColor: "red"
+  //   },
+  //   'CENTER': {
+  //     textAlign: "center"
+  //   }
+  // }
 
 class EditingInterface extends React.Component {
   constructor(props) {
     super(props);
+    // this.editor = React.createRef();
     this.state = {
       editorState: EditorState.createEmpty()
     };
@@ -28,14 +42,45 @@ class EditingInterface extends React.Component {
     return "not handled";
   }
 
+blockStyleFunc(contentBlock) {
+  const type = contentBlock.getType();
+  console.log(type);
+  if (type === 'LEFT') {
+    return 'left';
+  }
+  if (type === 'RIGHT') {
+    return 'right';
+  }
+  if (type === 'CENTER') {
+    return 'center';
+  }
+}
+
+styleWholeSelectedBlocksModifier(editorState, style, removeStyles) {
+  let currentContent = editorState.getCurrentContent();
+  let selection = editorState.getSelection();
+   let finalContent = Modifier.setBlockType(currentContent, selection, style);
+   this.onChange(EditorState.push(editorState, finalContent, 'change-inline-style'));
+}
+
+
+
   render() {
     const buttonStyles = ["BOLD", "ITALIC", "UNDERLINE", "CODE"];
+    const paragraphStyles = ["LEFT", "RIGHT", "CENTER"];
     return (
       <div>
         <div style={styles.toolbar}>
           {buttonStyles.map(style => {
             return (
               <button key={style} onClick={this._onClick} name={style}>
+                {style}
+              </button>
+            );
+          })}
+          {paragraphStyles.map(style => {
+            return (
+              <button key={style} onClick={() => this.styleWholeSelectedBlocksModifier(this.state.editorState, style, paragraphStyles.filter((a) => a !== style))} name={style}>
                 {style}
               </button>
             );
@@ -51,6 +96,7 @@ class EditingInterface extends React.Component {
           }}
         >
           <Editor
+            blockStyleFn={this.blockStyleFunc}
             editorState={this.state.editorState}
             onChange={this.onChange}
             handleKeyCommand={this.handleKeyCommand}
@@ -78,7 +124,8 @@ const styles = {
     height: "200px",
     margin: "0 auto"
   },
-  toolbar: {}
+  toolbar: {},
+
 };
 
 export default EditingInterface;
