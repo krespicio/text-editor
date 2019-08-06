@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import { faCoffee } from '@fortawesome/free-solid-svg-icons'
+import { FaAlignLeft, FaAlignRight, FaAlignCenter , FaSave} from 'react-icons/fa';
 import { Editor, EditorState, RichUtils, Modifier } from "draft-js";
 
 class EditingInterface extends React.Component {
@@ -89,7 +88,8 @@ styleWholeSelectedBlocksModifier(editorState, style, removeStyles) {
 
   render() {
     const textStyles = ["BOLD", "ITALIC", "UNDERLINE", "CODE"];
-    const paragraphStyles = ["LEFT", "RIGHT", "CENTER"]
+    const paragraphStyles = [{name:"LEFT", icon:<FaAlignLeft/>}, {name:"CENTER", icon:<FaAlignCenter/>}, {name: "RIGHT", icon: <FaAlignRight/>} ];
+
     return (
       <div>
         <div style={styles.toolbar}>
@@ -104,8 +104,8 @@ styleWholeSelectedBlocksModifier(editorState, style, removeStyles) {
           ))}
           {paragraphStyles.map(style => {
             return (
-              <button key={style} onClick={() => this.styleWholeSelectedBlocksModifier(this.state.editorState, style, paragraphStyles.filter((a) => a !== style))} name={style}>
-                {style}
+              <button key={style.name} onClick={() => this.styleWholeSelectedBlocksModifier(this.state.editorState, style.name, paragraphStyles.filter((a) => a !== style.name))} name={style.name}>
+                {style.icon}
               </button>
             );
           })}
@@ -114,7 +114,7 @@ styleWholeSelectedBlocksModifier(editorState, style, removeStyles) {
         <div
           style={{
             border: "1px solid black",
-            maxWidth: "80%",
+            maxWidth: "100%",
             height: "80%",
             padding: "5px"
           }}
@@ -130,7 +130,7 @@ styleWholeSelectedBlocksModifier(editorState, style, removeStyles) {
 
         <div style={styles.saveButton}>
           <button variant="success" size="sm">
-            Save Changes
+            <FaSave/>Save Changes
           </button>
         </div>
       </div>
