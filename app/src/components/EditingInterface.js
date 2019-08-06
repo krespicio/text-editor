@@ -77,10 +77,13 @@ class EditingInterface extends React.Component {
 	}
 
 	styleWholeSelectedBlocksModifier(editorState, style, removeStyles) {
-		let currentContent = editorState.getCurrentContent();
-		let selection = editorState.getSelection();
-		let finalContent = Modifier.setBlockType(currentContent, selection, style);
-		this.onChange(EditorState.push(editorState, finalContent, "change-inline-style"));
+		// let currentContent = editorState.getCurrentContent();
+		// let selection = editorState.getSelection();
+		// let finalContent = RichUtils.toggleBlockType(this.state.editorState, style);
+		// this.onChange(EditorState.push(editorState, finalContent, "change-inline-style"));
+
+		// e.preventDefault();
+		this.onChange(RichUtils.toggleBlockType(this.state.editorState, style));
 	}
 
 	// styleWholeSelectedBlocksModifier(editorState, style, removeStyles = []) {
@@ -131,22 +134,27 @@ class EditingInterface extends React.Component {
 						</button>
 					))}
 					<button
-						onClick={() =>
-							this.styleWholeSelectedBlocksModifier(this.state.editorState)
-						}>
+						onMouseDown={e => {
+							e.preventDefault();
+							this.styleWholeSelectedBlocksModifier(
+								this.state.editorState,
+								"ordered-list-item"
+							);
+						}}>
 						yeet
 					</button>
 					{paragraphStyles.map(style => {
 						return (
 							<button
 								key={style.name}
-								onClick={() =>
+								onMouseDown={e => {
+									e.preventDefault();
 									this.styleWholeSelectedBlocksModifier(
 										this.state.editorState,
 										style.name,
 										paragraphStyles.filter(a => a !== style.name)
-									)
-								}
+									);
+								}}
 								name={style.name}>
 								{style.icon}
 							</button>
