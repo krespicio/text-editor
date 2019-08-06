@@ -89,6 +89,7 @@ styleWholeSelectedBlocksModifier(editorState, style, removeStyles) {
 
   render() {
     const textStyles = ["BOLD", "ITALIC", "UNDERLINE", "CODE"];
+    const paragraphStyles = ["LEFT", "RIGHT", "CENTER"]
     return (
       <div>
         <div style={styles.toolbar}>
