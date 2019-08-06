@@ -1,7 +1,8 @@
 import React from "react";
+import { Route, Link, BrowserRouter as Router } from 'react-router-dom'
 import ReactDOM from "react-dom";
 import EditingInterface from "../components/EditingInterface.js";
-import { FaChevronLeft } from 'react-icons/fa';
+import { FaChevronLeft} from 'react-icons/fa';
 
 class Document extends React.Component {
   constructor(props) {
@@ -14,10 +15,14 @@ class Document extends React.Component {
       <div style={styles.container} name="document" id="document">
         <div style={styles.content}>
           <div style={styles.portalButton}>
+
             <button color="secondary" size="sm">
               {" "}
+              <Link to = "/portal">
               <FaChevronLeft /> Document Portal
+              </Link>
             </button>
+
           </div>
           <div style={styles.title}>
             <h2> DOCUMENT TITLE HERE </h2>
