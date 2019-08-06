@@ -38,7 +38,8 @@ const styles = {
   container: {
     display: "flex",
     width: "90%",
-    margin: "auto"
+    margin: "auto",
+    padding: "10px"
   },
   content: {
     flex: 1,
