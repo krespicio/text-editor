@@ -68,6 +68,12 @@ class EditingInterface extends React.Component {
 		if (type === "CENTER") {
 			return "center";
 		}
+		if (type === "OL") {
+			return "ordered-list-item";
+		}
+		if (type === "UL") {
+			return "unordered-list-item";
+		}
 	}
 
 	styleWholeSelectedBlocksModifier(editorState, style, removeStyles) {
@@ -76,6 +82,33 @@ class EditingInterface extends React.Component {
 		let finalContent = Modifier.setBlockType(currentContent, selection, style);
 		this.onChange(EditorState.push(editorState, finalContent, "change-inline-style"));
 	}
+
+	// styleWholeSelectedBlocksModifier(editorState, style, removeStyles = []) {
+	// 	let currentContent = editorState.getCurrentContent();
+	// 	let selection = editorState.getSelection();
+	// 	let focusBlock = currentContent.getBlockForKey(selection.getFocusKey());
+	// 	let anchorBlock = currentContent.getBlockForKey(selection.getAnchorKey());
+	// 	let selectionIsBackward = selection.getIsBackward();
+
+	// 	let changes = {
+	// 		anchorOffset: 0,
+	// 		focusOffset: focusBlock.getLength(),
+	// 	};
+
+	// 	if (selectionIsBackward) {
+	// 		changes = {
+	// 			focusOffset: 0,
+	// 			anchorOffset: anchorBlock.getLength(),
+	// 		};
+	// 	}
+
+	// 	let selectWholeBlocks = selection.merge(changes);
+	// 	let modifiedContent = Modifier.applyInlineStyle(currentContent, selectWholeBlocks, style);
+	// 	let finalContent = removeStyles.reduce(function(content, style) {
+	// 		return Modifier.removeInlineStyle(content, selectWholeBlocks, style);
+	// 	}, modifiedContent);
+	// 	this.onChange(EditorState.push(editorState, finalContent, "change-inline-style"));
+	// }
 
 	render() {
 		const textStyles = ["BOLD", "ITALIC", "UNDERLINE", "CODE"];
@@ -97,6 +130,12 @@ class EditingInterface extends React.Component {
 							{style}
 						</button>
 					))}
+					<button
+						onClick={() =>
+							this.styleWholeSelectedBlocksModifier(this.state.editorState)
+						}>
+						yeet
+					</button>
 					{paragraphStyles.map(style => {
 						return (
 							<button
