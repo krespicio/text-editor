@@ -93,7 +93,7 @@ class EditingInterface extends React.Component {
 						onToggle={this.toggleColor}
 					/>
 					{textStyles.map(style => (
-						<button key={style} onClick={this._onMouseDown.bind(this)} name={style}>
+						<button key={style} onMouseDown={this._onClick.bind(this)} name={style}>
 							{style}
 						</button>
 					))}
