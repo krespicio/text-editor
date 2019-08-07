@@ -12,6 +12,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const { User, Session } = require("./models");
 const auth = require("./routes/Auth");
+const docRoutes = require("./routes/docRoutes");
 
 const app = express();
 
@@ -99,19 +100,8 @@ passport.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.use((err, req, res, next) => {
-// 	if (err) {
-// 		res.status(500).json({ error: err });
-// 	}
-// });
-
-// Routes
-// app.get("/", (req, res, next) => {
-// 	console.log("THE USER IS", req.user);
-// 	res.json({ success: true });
-// });
-
 app.use("/", auth(passport));
+app.use("/", docRoutes);
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
