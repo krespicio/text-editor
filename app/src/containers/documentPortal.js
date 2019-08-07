@@ -10,6 +10,7 @@ class DocumentPortal extends React.Component {
 		this.state = {
 			username: "",
 			docs: [],
+			docName: "",
 		};
 	}
 
@@ -28,37 +29,44 @@ class DocumentPortal extends React.Component {
 	}
 
 	setCurrentUser(username, docs) {
-		console.log("get current user is called");
+		console.log("get current user is called", username);
 
 		this.setState({
 			username,
 			docs,
 		});
-
-		this.getDocs();
 	}
 
-	getDocs() {
-		console.log("We are converting the document");
-	}
-
-	logOut() {
+	createDoc(docName) {
 		// I just want to make a request so that the server logs us out
-		fetch("http://localhost:5000/user", {
-			method: "GET",
+		fetch("http://localhost:5000/createDoc", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			redirect: "follow",
+			credentials: "include",
+			body: JSON.stringify({
+				title: this.state.docName,
+				password: "temp",
+			}),
+		});
+		this.setState({
+			docs: this.state.docs.concat(this.state.docName),
+			docName: "",
 		});
 	}
 
 	render() {
+		console.log(this.state.username);
 		return (
 			<div style={styles.container} name="documentPortal" id="documentPortal">
 				<div style={styles.content}>
 					<div style={styles.user}>
 						<span style={{ marginRight: "15px" }}>
-							{" "}
-							Welcome to your Portal, {this.state.user}{" "}
+							Welcome to your Portal, {this.state.username}{" "}
 						</span>
-						<button onClick={() => this.logOut()}>
+						<button onClick={this.logOut}>
 							<Link to="/login">
 								<FaRegUser />
 								Log Out
@@ -69,9 +77,15 @@ class DocumentPortal extends React.Component {
 						type="text"
 						name="createDocument"
 						placeholder="Enter Document Name Here"
+						value={this.state.docName}
+						onChange={e =>
+							this.setState({
+								docName: e.target.value,
+							})
+						}
 						style={{ width: "200px" }}
 					/>
-					<button>Create Document</button>
+					<button onClick={() => this.createDoc()}>Create Document</button>
 					<br />
 					<div style={styles.title}>
 						<h2> Document Portal </h2>
