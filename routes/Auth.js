@@ -12,28 +12,27 @@ function hashPassword(password) {
 }
 
 module.exports = function(passport) {
-	router.post("/signup", function (req, res) {
+	router.post("/signup", function(req, res) {
 		console.log("in here to sign up dad");
 		const newUser = new User({
-				username: req.body.username,
-				password: hashPassword(req.body.password),
-				documents: []
-			});
-			console.log(newUser); 
-			newUser.save(function(err, result) {
-				console.log(err, result); 
-				console.log('hiii');
-				if (err) {
-					console.log('we be erroring')
-					res.json({success: false, error:err});
-				}
-				if (!err) {
-					console.log('mama i made it')
-					res.json({success: true, error: ''});
-				}
+			username: req.body.username,
+			password: hashPassword(req.body.password),
+			documents: [],
+		});
+		console.log(newUser);
+		newUser.save(function(err, result) {
+			console.log(err, result);
+			console.log("hiii");
+			if (err) {
+				console.log("we be erroring");
+				res.json({ success: false, error: err });
+			}
+			if (!err) {
+				console.log("mama i made it");
+				res.json({ success: true, error: "" });
+			}
+		});
 	});
-}); 
-
 
 	router.post(
 		"/login",
@@ -70,6 +69,7 @@ module.exports = function(passport) {
 	});
 
 	router.use((req, res, next) => {
+		console.log("This is the user in the use", req.user);
 		if (!req.user) {
 			res.status(401).json({
 				success: false,
@@ -78,6 +78,18 @@ module.exports = function(passport) {
 			return;
 		}
 		next();
+	});
+
+	router.get("/user", (req, res) => {
+		console.log("This is the user", req.user);
+		if (req.user) {
+			return res.send({ user: req.user });
+		} else {
+			return res.status(401).json({
+				success: false,
+				error: "Not authorized",
+			});
+		}
 	});
 
 	return router;
