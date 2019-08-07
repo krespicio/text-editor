@@ -8,15 +8,14 @@ class DocumentPortal extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			user: "Decadence",
+			username: "",
+			docs: [],
 		};
 	}
 
-	// componentDidMount() {}
-
-	async getCurrentUser() {
+	async componentDidMount() {
 		const user = await fetch("http://localhost:5000/user", {
-			method: "POST",
+			method: "GET",
 			credentials: "include",
 			redirect: "follow",
 			headers: {
@@ -24,15 +23,33 @@ class DocumentPortal extends React.Component {
 			},
 		});
 		const userJSON = await user.json();
-		console.log(userJSON);
+		console.log("the user json is", userJSON.username);
+		this.setCurrentUser(userJSON.username, userJSON.documents);
+	}
+
+	setCurrentUser(username, docs) {
+		console.log("get current user is called");
+
+		this.setState({
+			username,
+			docs,
+		});
+
+		this.getDocs();
+	}
+
+	getDocs() {
+		console.log("We are converting the document");
 	}
 
 	logOut() {
-		console.log("This is ");
+		// I just want to make a request so that the server logs us out
+		fetch("http://localhost:5000/user", {
+			method: "GET",
+		});
 	}
 
 	render() {
-		this.getCurrentUser();
 		return (
 			<div style={styles.container} name="documentPortal" id="documentPortal">
 				<div style={styles.content}>
@@ -61,6 +78,11 @@ class DocumentPortal extends React.Component {
 					</div>
 					<div style={styles.documentsBox}>
 						<h3 style={styles.title}> My Documents </h3>
+						<ul>
+							{this.state.docs.map(doc => (
+								<li>doc</li>
+							))}
+						</ul>
 					</div>
 					<input
 						type="text"

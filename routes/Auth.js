@@ -52,7 +52,7 @@ module.exports = function(passport) {
 	// });
 
 	router.get("/login/success", (req, res) => {
-		res.json({ success: true });
+		res.json({ success: true, login: "yeet" });
 		console.log("success", req.user, req.session.user);
 
 		return;
@@ -61,6 +61,13 @@ module.exports = function(passport) {
 	router.get("/login/failure", (req, res) => {
 		res.json({ success: false });
 		return;
+	});
+
+	router.get("/user", (req, res) => {
+		console.log("call of the user");
+		if (req.user) {
+			return res.json(req.user);
+		}
 	});
 
 	//GET Logout page
@@ -181,9 +188,9 @@ module.exports = function(passport) {
 	// 	})
 	// });
 	router.use((req, res, next) => {
-		console.log("cookies", req.cookies, req.session);
+		// console.log("cookies", req.cookies, req.session);
 
-		console.log("This is the user in the use", req.user);
+		// console.log("This is the user in the use", req.user);
 		if (!req.user) {
 			res.status(401).json({
 				success: false,
@@ -194,9 +201,9 @@ module.exports = function(passport) {
 		next();
 	});
 
-	router.post("/user", (req, res) => {
-		res.json({ success: true });
-	});
+	// router.post("/user", (req, res) => {
+	// 	res.json({ success: true });
+	// });
 
 	return router;
 };
