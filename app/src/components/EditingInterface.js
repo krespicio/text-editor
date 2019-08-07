@@ -1,7 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { FaAlignLeft, FaAlignRight, FaAlignCenter, FaSave } from "react-icons/fa";
+import {
+	FaAlignLeft,
+	FaAlignRight,
+	FaAlignCenter,
+	FaSave,
+	FaListOl,
+	FaListUl,
+} from "react-icons/fa";
 import { Editor, EditorState, RichUtils, Modifier } from "draft-js";
+import "../App.css";
 
 class EditingInterface extends React.Component {
 	constructor(props) {
@@ -14,39 +22,14 @@ class EditingInterface extends React.Component {
 
 		this.onChange = editorState => this.setState({ editorState });
 		this.handleKeyCommand = this.handleKeyCommand.bind(this);
-		this.toggleColor = toggledColor => this._toggleColor(toggledColor);
+
 		this.focus = () => this.editor.focus();
 		this._onClick = e => {
+			//this is for the bold, italic...
 			e.preventDefault();
 			this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, e.target.name));
 		};
 	}
-
-	_toggleColor(toggledColor) {
-		const { editorState } = this.state;
-		const selection = editorState.getSelection();
-		// Let's just allow one color at a time. Turn off all active colors.
-		const nextContentState = Object.keys(colorStyleMap).reduce((contentState, color) => {
-			return Modifier.removeInlineStyle(contentState, selection, color);
-		}, editorState.getCurrentContent());
-		let nextEditorState = EditorState.push(
-			editorState,
-			nextContentState,
-			"change-inline-style"
-		);
-		const currentStyle = editorState.getCurrentInlineStyle();
-		// Unset style override for current color.
-		if (selection.isCollapsed()) {
-			nextEditorState = currentStyle.reduce((state, color) => {
-				return RichUtils.toggleInlineStyle(state, color);
-			}, nextEditorState);
-		}
-		// If the color is being toggled on, apply it.
-		if (!currentStyle.has(toggledColor)) {
-			nextEditorState = RichUtils.toggleInlineStyle(nextEditorState, toggledColor);
-		}
-		this.onChange(nextEditorState);
-  }
 
 	handleKeyCommand(command, editorState) {
 		const newState = RichUtils.handleKeyCommand(editorState, command);
@@ -84,33 +67,6 @@ class EditingInterface extends React.Component {
 		this.onChange(EditorState.push(editorState, finalContent, "change-inline-style"));
 	}
 
-	// styleWholeSelectedBlocksModifier(editorState, style, removeStyles = []) {
-	// 	let currentContent = editorState.getCurrentContent();
-	// 	let selection = editorState.getSelection();
-	// 	let focusBlock = currentContent.getBlockForKey(selection.getFocusKey());
-	// 	let anchorBlock = currentContent.getBlockForKey(selection.getAnchorKey());
-	// 	let selectionIsBackward = selection.getIsBackward();
-
-	// 	let changes = {
-	// 		anchorOffset: 0,
-	// 		focusOffset: focusBlock.getLength(),
-	// 	};
-
-	// 	if (selectionIsBackward) {
-	// 		changes = {
-	// 			focusOffset: 0,
-	// 			anchorOffset: anchorBlock.getLength(),
-	// 		};
-	// 	}
-
-	// 	let selectWholeBlocks = selection.merge(changes);
-	// 	let modifiedContent = Modifier.applyInlineStyle(currentContent, selectWholeBlocks, style);
-	// 	let finalContent = removeStyles.reduce(function(content, style) {
-	// 		return Modifier.removeInlineStyle(content, selectWholeBlocks, style);
-	// 	}, modifiedContent);
-	// 	this.onChange(EditorState.push(editorState, finalContent, "change-inline-style"));
-	// }
-
 	render() {
 		const textStyles = ["BOLD", "ITALIC", "UNDERLINE", "CODE"];
 		const paragraphStyles = [
@@ -118,25 +74,29 @@ class EditingInterface extends React.Component {
 			{ name: "CENTER", icon: <FaAlignCenter /> },
 			{ name: "RIGHT", icon: <FaAlignRight /> },
 		];
+		const colorStyles = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
+		const fontStyles = ["small", "medium", "large"];
 
 		return (
 			<div>
 				<div style={styles.toolbar}>
-					<ColorControls
-						editorState={this.state.editorState}
-						onToggle={this.toggleColor}
-					/>
+					{colorStyles.map(style => (
+						<button key={style} onMouseDown={this._onClick.bind(this)} name={style}>
+							{style}
+						</button>
+					))}
+
+					{fontStyles.map(style => (
+						<button key={style} onMouseDown={this._onClick.bind(this)} name={style}>
+							{style}
+						</button>
+					))}
+
 					{textStyles.map(style => (
 						<button key={style} onMouseDown={this._onClick.bind(this)} name={style}>
 							{style}
 						</button>
 					))}
-					<button
-						onClick={() =>
-							this.styleWholeSelectedBlocksModifier(this.state.editorState)
-						}>
-						yeet
-					</button>
 					{paragraphStyles.map(style => {
 						return (
 							<button
@@ -158,7 +118,7 @@ class EditingInterface extends React.Component {
 				<div
 					style={{
 						border: "1px solid black",
-						maxWidth: "100%",
+						maxWidth: "750px",
 						height: "80%",
 						padding: "5px",
 					}}>
@@ -167,7 +127,8 @@ class EditingInterface extends React.Component {
 						editorState={this.state.editorState}
 						onChange={this.onChange}
 						handleKeyCommand={this.handleKeyCommand}
-						customStyleMap={colorStyleMap}
+						ref={Editor => Editor && Editor.focus()}
+						customStyleMap={styleMap}
 					/>
 				</div>
 
@@ -182,58 +143,7 @@ class EditingInterface extends React.Component {
 	}
 }
 
-class StyleButton extends React.Component {
-	constructor(props) {
-		super(props);
-		this.onToggle = e => {
-			e.preventDefault();
-			this.props.onToggle(this.props.style);
-		};
-	}
-	render() {
-		let style;
-		if (this.props.active) {
-			style = { ...styles.styleButton, ...colorStyleMap[this.props.style] };
-		} else {
-			style = styles.styleButton;
-		}
-		return (
-			<span style={style} onMouseDown={this.onToggle}>
-				{this.props.label}
-			</span>
-		);
-	}
-}
-
-var COLORS = [
-	{ label: "Red", style: "red" },
-	{ label: "Orange", style: "orange" },
-	{ label: "Yellow", style: "yellow" },
-	{ label: "Green", style: "green" },
-	{ label: "Blue", style: "blue" },
-	{ label: "Indigo", style: "indigo" },
-	{ label: "Violet", style: "violet" },
-];
-const ColorControls = props => {
-	var currentStyle = props.editorState.getCurrentInlineStyle();
-	return (
-		<div style={styles.controls}>
-			{COLORS.map(type => (
-				<div style={{ display: "inline-block", marginRight: "5px" }}>
-					<StyleButton
-						key={type.label}
-						active={currentStyle.has(type.style)}
-						label={type.label}
-						onToggle={props.onToggle}
-						style={type.style}
-					/>
-				</div>
-			))}
-		</div>
-	);
-};
-
-const colorStyleMap = {
+const styleMap = {
 	red: {
 		color: "rgba(255, 0, 0, 1.0)",
 	},
@@ -254,6 +164,15 @@ const colorStyleMap = {
 	},
 	violet: {
 		color: "rgba(127, 0, 255, 1.0)",
+	},
+	small: {
+		fontSize: "10px",
+	},
+	medium: {
+		fontSize: "20px",
+	},
+	large: {
+		fontSize: "30px",
 	},
 };
 

@@ -7,12 +7,15 @@ import { Route, Link, Redirect, BrowserRouter as Router } from "react-router-dom
 import Login from "./components/login.js";
 import Document from "./containers/document.js";
 import Signup from "./components/signup.js";
+import DocumentPortal from "./containers/documentPortal.js";
 
 const routing = (
 	<Router>
 		<Route exact path="/login" component={Login} />
 		<Route exact path="/signup" component={Signup} />
+		<Route exact path="/portal" component={DocumentPortal} />
 		<Route exact path="/" component={Document} />
+
 	</Router>
 );
 
