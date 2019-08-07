@@ -7,7 +7,7 @@ export default function Login() {
 	const [isLogin, setIsLogin] = useState("");
 	const [errorText, setErrorText] = useState("");
 
-	const postLogin = async (e) => {
+	const postLogin = async e => {
 		e.preventDefault();
 		const response = await fetch("http://localhost:5000/login", {
 			method: "POST",
@@ -29,12 +29,11 @@ export default function Login() {
 	};
 
 	if (isLogin) {
-		console.log('LOGGED IN BITCH')
-		return <h1>soiaefhoisefhiohefio</h1>
+		console.log("LOGGED IN BITCH");
+		return <Redirect to="/portal" />;
 	} else {
 		return (
-			<div
-				style={styles}>
+			<div style={styles}>
 				<h3 style={{ textAlign: "center" }}>Login</h3>
 				{errorText && <p>{errorText}</p>}
 				<form className="loginForm" onSubmit={e => postLogin(e)}>
@@ -65,11 +64,7 @@ export default function Login() {
 						</div>
 					</div>
 					<div style={{ display: "flex", justifyContent: "space-between" }}>
-						<input
-							style={{ width: "50%" }}
-							type="submit"
-							value="Login"
-						/>
+						<input style={{ width: "50%" }} type="submit" value="Login" />
 						<Link to="/signup" style={{ textAlign: "right" }}>
 							SignUp Here!
 						</Link>
@@ -80,11 +75,10 @@ export default function Login() {
 	}
 }
 
-const styles = 
-	{
-		justifyContent: "center",
-		alignItems: "center",
-		height: "100%",
-		display: "flex",
-		flexDirection: "column",
-	};
+const styles = {
+	justifyContent: "center",
+	alignItems: "center",
+	height: "100%",
+	display: "flex",
+	flexDirection: "column",
+};
