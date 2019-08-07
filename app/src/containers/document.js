@@ -1,4 +1,5 @@
 import React from "react";
+import { Route, Link, BrowserRouter as Router } from "react-router-dom";
 import ReactDOM from "react-dom";
 import EditingInterface from "../components/EditingInterface.js";
 import { FaChevronLeft } from "react-icons/fa";
@@ -9,6 +10,19 @@ class Document extends React.Component {
     this.state = {};
   }
 
+  async componentDidMount() {
+    const response = await fetch("http://localhost:5000", {
+      credentials: "include",
+      mode: "cors",
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    });
+    console.log(response);
+  }
+
   render() {
     return (
       <div style={styles.container} name="document" id="document">
@@ -16,7 +30,9 @@ class Document extends React.Component {
           <div style={styles.portalButton}>
             <button color="secondary" size="sm">
               {" "}
-              <FaChevronLeft /> Document Portal
+              <Link to="/portal">
+                <FaChevronLeft /> Document Portal
+              </Link>
             </button>
           </div>
           <div style={styles.title}>

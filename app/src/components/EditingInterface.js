@@ -4,7 +4,9 @@ import {
   FaAlignLeft,
   FaAlignRight,
   FaAlignCenter,
-  FaSave
+  FaSave,
+  FaListOl,
+  FaListUl
 } from "react-icons/fa";
 import { Editor, EditorState, RichUtils, Modifier } from "draft-js";
 import socketIOClient from "socket.io-client";
@@ -18,6 +20,7 @@ class EditingInterface extends React.Component {
       bold: false,
       endpoint: "http://localhost:5000"
     };
+
     this.onChange = editorState => this.setState({ editorState });
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
 
@@ -29,11 +32,6 @@ class EditingInterface extends React.Component {
         RichUtils.toggleInlineStyle(this.state.editorState, e.target.name)
       );
     };
-  }
-
-  componentDidMount() {
-    const socket = socketIOClient(this.state.endpoint);
-    socket.on("changeText", data => {});
   }
 
   handleKeyCommand(command, editorState) {
@@ -57,6 +55,12 @@ class EditingInterface extends React.Component {
     if (type === "CENTER") {
       return "center";
     }
+    if (type === "OL") {
+      return "ordered-list-item";
+    }
+    if (type === "UL") {
+      return "unordered-list-item";
+    }
   }
 
   styleWholeSelectedBlocksModifier(editorState, style, removeStyles) {
@@ -70,6 +74,11 @@ class EditingInterface extends React.Component {
 
   render() {
     const textStyles = ["BOLD", "ITALIC", "UNDERLINE", "CODE"];
+    const paragraphStyles = [
+      { name: "LEFT", icon: <FaAlignLeft /> },
+      { name: "CENTER", icon: <FaAlignCenter /> },
+      { name: "RIGHT", icon: <FaAlignRight /> }
+    ];
     const colorStyles = [
       "red",
       "orange",
@@ -80,11 +89,6 @@ class EditingInterface extends React.Component {
       "violet"
     ];
     const fontStyles = ["small", "medium", "large"];
-    const paragraphStyles = [
-      { name: "LEFT", icon: <FaAlignLeft /> },
-      { name: "CENTER", icon: <FaAlignCenter /> },
-      { name: "RIGHT", icon: <FaAlignRight /> }
-    ];
 
     return (
       <div>
