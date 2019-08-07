@@ -22,6 +22,8 @@ class DocumentPortal extends React.Component {
 	async getCurrentUser() {
 		const user = await fetch("http://localhost:5000/:userId", {
 			method: "GET",
+			credentials: "include",
+			redirect: "follow",
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -50,7 +52,7 @@ class DocumentPortal extends React.Component {
 	}
 
 	render() {
-		// this.getCurrentUser();
+		this.getCurrentUser();
 		return (
 			<div style={styles.container} name="documentPortal" id="documentPortal">
 				<div style={styles.content}>
@@ -59,7 +61,7 @@ class DocumentPortal extends React.Component {
 							{" "}
 							Welcome to your Portal, {this.state.user}{" "}
 						</span>
-						<button>
+						<button onClick={() => this.logOut()}>
 							<Link to="/login">
 								<FaRegUser />
 								Log Out

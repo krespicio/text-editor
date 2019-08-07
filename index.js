@@ -10,7 +10,7 @@ const crypto = require("crypto");
 const MongoStore = require("connect-mongo")(session);
 const mongoose = require("mongoose");
 const cors = require("cors");
-const { User } = require("./models");
+const { User, Session } = require("./models");
 const http = require("http");
 const socketIO = require("socket.io");
 
@@ -38,19 +38,23 @@ if (!process.env.SECRET) {
 }
 
 // Middleware Protocols
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cookieParser());
+app.use(cors({ origin: true, credentials: true }));
 app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+
 app.use(express.static(path.join(__dirname, "public")));
 
 // Passport stuff
+
 app.use(
   session({
     secret: process.env.SECRET,
-    cookie: { secure: false },
+    cookie: { secure: false, maxAge: 3600000 },
     store: new MongoStore({ mongooseConnection: mongoose.connection })
+    // saveUninitialized: true,
+    //resave: true,
   })
 );
 
@@ -100,6 +104,12 @@ passport.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// app.use((err, req, res, next) => {
+// 	if (err) {
+// 		res.status(500).json({ error: err });
+// 	}
+// });
+
 // Routes
 app.get("/", (req, res, next) => {
   console.log("THE USER IS", req.user);
@@ -132,6 +142,7 @@ io.on("connection", socket => {
 });
 app.use("/", auth(passport));
 
+app.use("/", auth(passport));
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 

@@ -13,6 +13,7 @@ import Login from "./components/login.js";
 import Document from "./containers/document.js";
 import Signup from "./components/signup.js";
 import DocumentPortal from "./containers/documentPortal.js";
+import 'bootstrap/dist/css/bootstrap.css';
 
 const routing = (
   <Router>
