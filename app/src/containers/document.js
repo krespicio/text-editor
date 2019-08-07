@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import EditingInterface from "../components/EditingInterface.js";
-import { FaChevronLeft } from 'react-icons/fa';
+import { FaChevronLeft } from "react-icons/fa";
 
 class Document extends React.Component {
   constructor(props) {

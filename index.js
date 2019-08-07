@@ -11,6 +11,8 @@ const MongoStore = require("connect-mongo")(session);
 const mongoose = require("mongoose");
 const cors = require("cors");
 const { User } = require("./models");
+const http = require("http");
+const socketIO = require("socket.io");
 
 // Import Model
 // Hello
@@ -22,8 +24,8 @@ const auth = require("./routes/Auth");
 
 // Ensure there is a pasword
 if (!process.env.SECRET) {
-	console.log("Error: no secret");
-	process.exit(1);
+  console.log("Error: no secret");
+  process.exit(1);
 }
 
 // Middleware Protocols
@@ -34,60 +36,59 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-
 // Passport stuff
 app.use(
-	session({
-		secret: process.env.SECRET,
-		resave: true,
-		saveUninitialized: true,
-		store: new MongoStore({ mongooseConnection: mongoose.connection }),
-		cookie: {
-			httpOnly: true,
-			secure: false,
-		},
-	})
+  session({
+    secret: process.env.SECRET,
+    resave: true,
+    saveUninitialized: true,
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+    cookie: {
+      httpOnly: true,
+      secure: false
+    }
+  })
 );
 
 function hashPassword(password) {
-	let hash = crypto.createHash("sha256");
-	hash.update(password);
-	return hash.digest("hex");
+  let hash = crypto.createHash("sha256");
+  hash.update(password);
+  return hash.digest("hex");
 }
 
 passport.serializeUser(function(user, done) {
-	done(null, user._id);
+  done(null, user._id);
 });
 passport.deserializeUser(function(id, done) {
-	User.findById(id, function(err, user) {
-		done(err, user);
-		console.log('k')
-	});
+  User.findById(id, function(err, user) {
+    done(err, user);
+    console.log("k");
+  });
 });
 
 passport.use(
-	new LocalStrategy(function(username, password, done) {
-		// Find the user with the given username
-		User.findOne({ username: username }, function(err, user) {
-			// if there's an error, finish trying to authenticate (auth failed)
-			if (err) {
-				console.log(err);
-				return done(err);
-			}
-			// if no user present, auth failed
-			if (!user) {
-				console.log(user);
-				return done(null, false);
-			}
-			// if passwords do not match, auth failed
-			if (user.password !== hashPassword(password)) {
-				return done(null, false);
-			}
-			// auth has has succeeded
-			console.log('we good', user); 
-			return done(null, user);
-		});
-	})
+  new LocalStrategy(function(username, password, done) {
+    // Find the user with the given username
+    User.findOne({ username: username }, function(err, user) {
+      // if there's an error, finish trying to authenticate (auth failed)
+      if (err) {
+        console.log(err);
+        return done(err);
+      }
+      // if no user present, auth failed
+      if (!user) {
+        console.log(user);
+        return done(null, false);
+      }
+      // if passwords do not match, auth failed
+      if (user.password !== hashPassword(password)) {
+        return done(null, false);
+      }
+      // auth has has succeeded
+      console.log("we good", user);
+      return done(null, user);
+    });
+  })
 );
 
 // ji
@@ -105,15 +106,27 @@ REQUIRED_ENVS.forEach(function(el) {
 });
 mongoose.connect(process.env.MONGODB_URI);
 mongoose.connection.on("open", () => console.log(`Connected to MongoDB!`));
-mongoose.connection.on('error',function (err) {  
-  console.log('Mongoose default connection error: ' + err);
-}); 
+mongoose.connection.on("error", function(err) {
+  console.log("Mongoose default connection error: " + err);
+});
+
+//socket
+const server = http.createServer(app);
+const io = socketIO(server);
+
+io.on("connection", socket => {
+  console.log("User connected");
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+  });
+});
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
 app.get("/", (req, res) => {
-	res.send("hi");
+  res.send("hi");
 });
 
 module.exports = app;

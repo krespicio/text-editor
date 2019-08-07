@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import {
   FaAlignLeft,
@@ -7,6 +7,7 @@ import {
   FaSave
 } from "react-icons/fa";
 import { Editor, EditorState, RichUtils, Modifier } from "draft-js";
+import socketIOClient from "socket.io-client";
 
 class EditingInterface extends React.Component {
   constructor(props) {
@@ -14,7 +15,8 @@ class EditingInterface extends React.Component {
     // this.editor = React.createRef();
     this.state = {
       editorState: EditorState.createEmpty(),
-      bold: false
+      bold: false,
+      endpoint: "http://localhost:5000"
     };
     this.onChange = editorState => this.setState({ editorState });
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
@@ -27,6 +29,11 @@ class EditingInterface extends React.Component {
         RichUtils.toggleInlineStyle(this.state.editorState, e.target.name)
       );
     };
+  }
+
+  componentDidMount() {
+    const socket = socketIOClient(this.state.endpoint);
+    socket.on("changeText", data => {});
   }
 
   handleKeyCommand(command, editorState) {
