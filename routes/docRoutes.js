@@ -28,39 +28,6 @@ router.post("/createDoc", function(req, res){
     
 });
 
-//saves the new body and updates the document
-router.post("/docs/:docId/save", function(req, res){
-    
-    let docId = req.params.docId;
-    let body = new Body ({
-        timestamp: new Date(),
-        content: req.body.content
-    }); 
-
-    Document.findOne({_id: docId}, function(err, result){
-        if (err) {
-            console.log(err); 
-            res.json({success: false, error: err}); 
-        }
-
-        if(!err) {
-            console.log(result); 
-            body.save();
-            result.body.push(body); 
-            result.save(function(err, success){
-                if (err) {
-                    res.json({success: false, error: err}); 
-                }
-                if (success) {
-                    console.log('successfully saved the updated document')
-                    res.json({success: true, error: ''}); 
-                }
-            }); 
-            
-        }
-    })
-});
-
 //adds a collaborator to the document
 
 router.post("/createDoc", function(req, res){
@@ -80,7 +47,14 @@ router.post("/createDoc", function(req, res){
         }
         if (!err) {
             console.log('successfully saved');
-            res.json({success: true, error: ''});
+            User.findOne({_id: req.user._id}, function(err, user){
+                if (err) {res.json({success: false, error: err})}
+                if (!err) {
+                    user.documents.push(newDoc); 
+                    user.save(); 
+                    res.json({success: true, error: 'no error'});
+                }
+            })
         }
     });
     
