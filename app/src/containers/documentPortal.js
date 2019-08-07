@@ -14,19 +14,25 @@ class DocumentPortal extends React.Component {
 
 	// componentDidMount() {}
 
-	// async getCurrentUser() {
-	// 	const user = await fetch("http://localhost:5000/user", {
-	// 		method: "POST",
-	// 		headers: {
-	// 			"Content-Type": "application/json",
-	// 		},
-	// 	});
-	// 	const userJSON = await user.json();
-	// 	console.log(userJSON);
-	// }
+	async getCurrentUser() {
+		const user = await fetch("http://localhost:5000/user", {
+			method: "POST",
+			credentials: "include",
+			redirect: "follow",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+		const userJSON = await user.json();
+		console.log(userJSON);
+	}
+
+	logOut() {
+		console.log("This is ");
+	}
 
 	render() {
-		// this.getCurrentUser();
+		this.getCurrentUser();
 		return (
 			<div style={styles.container} name="documentPortal" id="documentPortal">
 				<div style={styles.content}>
@@ -35,7 +41,7 @@ class DocumentPortal extends React.Component {
 							{" "}
 							Welcome to your Portal, {this.state.user}{" "}
 						</span>
-						<button>
+						<button onClick={() => this.logOut()}>
 							<Link to="/login">
 								<FaRegUser />
 								Log Out
