@@ -94,7 +94,7 @@ class DocumentPortal extends React.Component {
 						<h3 style={styles.title}> My Documents </h3>
 						<ul>
 							{this.state.docs.map(doc => (
-								<li>doc</li>
+								<li>{doc.title}</li>
 							))}
 						</ul>
 					</div>

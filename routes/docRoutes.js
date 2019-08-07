@@ -1,33 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { Document } = require("../models");
+const { Document, User } = require("../models");
 const mongoose = require("mongoose");
-
-//creates and saves a new document
-router.post("/createDoc", function(req, res) {
-	let newDoc = new Document({
-		title: req.body.title,
-		password: req.body.password,
-		owner: req.user,
-		collaborators: [req.user],
-		body: [],
-	});
-
-	newDoc.save(function(err, result) {
-		if (err) {
-			console.log(err);
-			res.json({ success: false, error: err });
-		}
-		if (!err) {
-			console.log("successfully saved");
-			res.json({ success: true, error: "" });
-		}
-	});
-});
 
 //adds a collaborator to the document
 
 router.post("/createDoc", function(req, res) {
+	console.log("hello");
 	let newDoc = new Document({
 		title: req.body.title,
 		password: req.body.password,
@@ -48,8 +27,8 @@ router.post("/createDoc", function(req, res) {
 					res.json({ success: false, error: err });
 				}
 				if (!err) {
-					let docs = documents.push(newDoc);
-					user.update({ documents: docs });
+					user.documents.push(newDoc);
+					user.save();
 					res.json({ success: true, error: "no error" });
 				}
 			});
@@ -80,60 +59,6 @@ router.post("/docs/:docId/save", function(req, res) {
 				}
 				if (success) {
 					console.log("successfully saved the updated document");
-					res.json({ success: true, error: "" });
-				}
-			});
-		}
-	});
-});
-
-router.post("/docs/:docId/addCollab", function(req, res) {
-	let collaborator = req.body.collabId;
-	let docId = req.params.docId;
-
-	Document.findOne({ _id: docId }, function(err, result) {
-		if (err) {
-			res.json({ success: false, error: err });
-		}
-		if (!err) {
-			console.log(result);
-			result.collaborators.push(collaborator);
-			result.save(function(err, success) {
-				if (err) {
-					res.json({ success: false, error: err });
-				}
-
-				if (!err) {
-					console.log("successfully added a collaborator");
-					res.json({ success: true, error: "" });
-				}
-			});
-		}
-	});
-});
-router.post("/docs/:docId/remCollab", function(req, res) {
-	console.log(req.user);
-	let collaborator = req.body.collabId;
-	let docId = req.params.docId;
-	Document.findOne({ _id: docId }, function(err, result) {
-		if (err) {
-			res.json({ success: false, error: err });
-		}
-		if (!err) {
-			console.log(result.owner._id);
-			if (collaborator === result.owner._id) {
-				res.json({ success: false, error: "Cannot remove owner from collaborators" });
-			}
-			const index = result.collaborators.indexOf(collaborator);
-			console.log("index of collaborator is", index);
-			result.collaborators = result.collaborators.splice(index, 1);
-			result.save(function(err, success) {
-				if (err) {
-					res.json({ success: false, error: err });
-				}
-
-				if (!err) {
-					console.log("successfully removed a collaborator");
 					res.json({ success: true, error: "" });
 				}
 			});
