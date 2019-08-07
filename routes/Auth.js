@@ -3,7 +3,7 @@ const router = express.Router();
 const crypto = require("crypto");
 
 // User Mongo
-const { User } = require("../models");
+const { User, Document, Body } = require("../models");
 
 function hashPassword(password) {
 	let hash = crypto.createHash("sha256");
@@ -68,6 +68,114 @@ module.exports = function(passport) {
 		});
 	});
 
+	// router.post("/createDoc", function(req, res){
+
+	// 	let newDoc = new Document({
+	// 		title: req.body.title,
+	// 		password: req.body.password,
+	// 		owner: req.user._id,
+	// 		collaborators: [req.user._id],
+	// 		body: []
+	// 	});
+
+	// 	newDoc.save(function(err,result){
+	// 		if (err) {
+	// 			console.log(err);
+	// 			res.json({success: false, error: err});
+	// 		}
+	// 		if (!err) {
+	// 			console.log('successfully saved');
+	// 			res.json({success: true, error: ''});
+	// 		}
+	// 	});
+
+	// });
+
+	// router.post("/docs/:docId/save", function(req, res){
+
+	// 	let docId = req.params.docId;
+	// 	let body = new Body ({
+	// 		timestamp: new Date(),
+	// 		content: req.body.content
+	// 	});
+
+	// 	Document.findOne({_id: docId}, function(err, result){
+	// 		if (err) {
+	// 			console.log(err);
+	// 			res.json({success: false, error: err});
+	// 		}
+
+	// 		if(!err) {
+	// 			console.log(result);
+	// 			body.save();
+	// 			result.body.push(body);
+	// 			result.save(function(err, success){
+	// 				if (err) {
+	// 					res.json({success: false, error: err});
+	// 				}
+	// 				if (success) {
+	// 					console.log('successfully saved the updated document')
+	// 					res.json({success: true, error: ''});
+	// 				}
+	// 			});
+
+	// 		}
+	// 	})
+	// });
+
+	// router.post("/docs/:docId/addCollab", function(req, res){
+	// 	let collaborator = req.body.collabId;
+	// 	let docId = req.params.docId;
+
+	// 	Document.findOne({_id: docId}, function(err, result){
+	// 		if (err) {
+	// 			res.json({success: false, error: err});
+	// 		}
+	// 		if (!err) {
+	// 			console.log(result);
+	// 			result.collaborators.push(collaborator);
+	// 			result.save(function(err, success){
+	// 				if (err){
+	// 					res.json({success: false, error: err});
+	// 				}
+
+	// 				if(!err) {
+	// 					console.log('successfully added a collaborator');
+	// 					res.json({success: true, error: ''});
+	// 				}
+	// 			})
+	// 		}
+	// 	})
+	// });
+	// router.post("/docs/:docId/remCollab", function(req, res){
+	// 	console.log(req.user);
+	// 	let collaborator = req.body.collabId;
+	// 	let docId = req.params.docId;
+	// 	Document.findOne({_id: docId}, function(err, result){
+	// 		if (err) {
+	// 			res.json({success: false, error: err});
+	// 		}
+	// 		if (!err) {
+	// 			console.log(result.owner._id);
+	// 			if (collaborator===result.owner._id) {
+	// 				res.json({success: false, error: 'Cannot remove owner from collaborators'});
+	// 			}
+	// 			const index = result.collaborators.indexOf(collaborator);
+	// 			console.log('index of collaborator is', index);
+	// 			result.collaborators = result.collaborators.splice(index, 1);
+	// 			result.save(function(err, success){
+	// 				if (err){
+	// 					res.json({success: false, error: err});
+	// 				}
+
+	// 				if(!err) {
+	// 					console.log('successfully removed a collaborator');
+	// 					res.json({success: true, error: ''})
+	// 				}
+	// 			})
+	// 		}
+	// 	})
+	// });
 	router.use((req, res, next) => {
 		console.log("This is the user in the use", req.user);
 		if (!req.user) {
@@ -78,18 +186,6 @@ module.exports = function(passport) {
 			return;
 		}
 		next();
-	});
-
-	router.get("/user", (req, res) => {
-		console.log("This is the user", req.user);
-		if (req.user) {
-			return res.send({ user: req.user });
-		} else {
-			return res.status(401).json({
-				success: false,
-				error: "Not authorized",
-			});
-		}
 	});
 
 	return router;
