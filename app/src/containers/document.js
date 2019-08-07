@@ -9,6 +9,19 @@ class Document extends React.Component {
     this.state = {};
   }
 
+  async componentDidMount() {
+    const response = await fetch("http://localhost:5000", {
+      credentials: "include",
+      mode: "cors",
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    });
+    console.log(response);
+  }
+
   render() {
     return (
       <div style={styles.container} name="document" id="document">

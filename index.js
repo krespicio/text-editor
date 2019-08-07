@@ -11,14 +11,20 @@ const MongoStore = require("connect-mongo")(session);
 const mongoose = require("mongoose");
 const cors = require("cors");
 const { User } = require("./models");
-
-// Import Model
-// Hello
+const auth = require("./routes/Auth");
 
 const app = express();
 
-// Import the Routes
-const auth = require("./routes/Auth");
+const REQUIRED_ENVS = ["MONGODB_URI"];
+
+REQUIRED_ENVS.forEach(function(el) {
+  if (!process.env[el]) throw new Error("Missing required env var " + el);
+});
+mongoose.connect(process.env.MONGODB_URI);
+mongoose.connection.on("open", () => console.log(`Connected to MongoDB!`));
+mongoose.connection.on('error',function (err) {  
+  console.log('Mongoose default connection error: ' + err);
+}); 
 
 // Ensure there is a pasword
 if (!process.env.SECRET) {
@@ -39,13 +45,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(
 	session({
 		secret: process.env.SECRET,
-		resave: true,
-		saveUninitialized: true,
+		cookie: { secure: false },
 		store: new MongoStore({ mongooseConnection: mongoose.connection }),
-		cookie: {
-			httpOnly: true,
-			secure: false,
-		},
 	})
 );
 
@@ -56,12 +57,14 @@ function hashPassword(password) {
 }
 
 passport.serializeUser(function(user, done) {
+	console.log('serializeUser', user, user._id);
 	done(null, user._id);
 });
+
 passport.deserializeUser(function(id, done) {
+	console.log('deserializeUser', id);
 	User.findById(id, function(err, user) {
 		done(err, user);
-		console.log('k')
 	});
 });
 
@@ -84,36 +87,23 @@ passport.use(
 				return done(null, false);
 			}
 			// auth has has succeeded
-			console.log('we good', user); 
+			// console.log('we good', user); 
 			return done(null, user);
 		});
 	})
 );
 
-// ji
-
 app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes
-app.use("/", auth(passport));
-
-const REQUIRED_ENVS = ["MONGODB_URI"];
-
-REQUIRED_ENVS.forEach(function(el) {
-  if (!process.env[el]) throw new Error("Missing required env var " + el);
+app.get("/", (req, res, next) => {
+	console.log("THE USER IS", req.user);
+	res.json({ success: true });
 });
-mongoose.connect(process.env.MONGODB_URI);
-mongoose.connection.on("open", () => console.log(`Connected to MongoDB!`));
-mongoose.connection.on('error',function (err) {  
-  console.log('Mongoose default connection error: ' + err);
-}); 
+app.use("/", auth(passport));
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
-
-app.get("/", (req, res) => {
-	res.send("hi");
-});
 
 module.exports = app;

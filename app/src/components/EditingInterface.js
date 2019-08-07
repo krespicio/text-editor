@@ -10,7 +10,8 @@ class EditingInterface extends React.Component {
 		this.state = {
 			editorState: EditorState.createEmpty(),
 			bold: false,
-		};
+    };
+
 		this.onChange = editorState => this.setState({ editorState });
 		this.handleKeyCommand = this.handleKeyCommand.bind(this);
 		this.toggleColor = toggledColor => this._toggleColor(toggledColor);
@@ -45,7 +46,7 @@ class EditingInterface extends React.Component {
 			nextEditorState = RichUtils.toggleInlineStyle(nextEditorState, toggledColor);
 		}
 		this.onChange(nextEditorState);
-	}
+  }
 
 	handleKeyCommand(command, editorState) {
 		const newState = RichUtils.handleKeyCommand(editorState, command);
