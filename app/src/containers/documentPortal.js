@@ -3,27 +3,51 @@ import ReactDOM from "react-dom";
 import { Route, Link, BrowserRouter as Router } from "react-router-dom";
 import EditingInterface from "../components/EditingInterface.js";
 import { FaChevronLeft, FaRegUser } from "react-icons/fa";
+import socketIOClient from "socket.io-client";
 
 class DocumentPortal extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			user: "Decadence",
+			endpoint: "http://localhost:5000", //socket stuff
+			documents: [] //added documents
 		};
 	}
 
-	// componentDidMount() {}
+	componentDidMount(){ //idk what this does but it might be useful later?
+		const socket = socketIOClient(this.state.endpoint);
+	}
 
-	// async getCurrentUser() {
-	// 	const user = await fetch("http://localhost:5000/user", {
-	// 		method: "POST",
-	// 		headers: {
-	// 			"Content-Type": "application/json",
-	// 		},
-	// 	});
-	// 	const userJSON = await user.json();
-	// 	console.log(userJSON);
-	// }
+	async getCurrentUser() {
+		const user = await fetch("http://localhost:5000/:userId", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+		const userJSON = await user.json();
+		console.log(userJSON);
+		this.setState({
+			user: userJSON.data.name; //name of the user
+		})
+	}
+
+	async getDocuments() { //gets the documents of the user
+		const documents = await fetch("http://localhost:5000/:userId/docs", {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+		const documentsJSON = await documents.json();
+		this.setState({documents: documentsJSON.data})
+	}
+
+	openDocument(docId) { //function called when user clicks on document name
+		const socket = socketIOClient(this.state.endpoint);
+		socket.emit('enterRoom', docId);
+	}
 
 	render() {
 		// this.getCurrentUser();
@@ -55,6 +79,10 @@ class DocumentPortal extends React.Component {
 					</div>
 					<div style={styles.documentsBox}>
 						<h3 style={styles.title}> My Documents </h3>
+						{this.state.documents.map((doc) => { //shows list of document names
+							let link = `http://localhost:3000/docs/${doc._id}`
+							<a href={link}><button onClick={() => this.openDocument(doc._id)}>{doc.title}</button></a>
+						})}
 					</div>
 					<input
 						type="text"

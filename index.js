@@ -121,6 +121,14 @@ io.on("connection", socket => {
   socket.on("disconnect", () => {
     console.log("user disconnected");
   });
+
+  socket.on("enterRoom", function(docId) {
+    socket.join(docId);
+  });
+
+  socket.on("leaveRoom", function(docId) {
+    socket.leave(docId);
+  });
 });
 app.use("/", auth(passport));
 
