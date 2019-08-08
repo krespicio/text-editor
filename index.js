@@ -131,16 +131,21 @@ io.on("connection", socket => {
 
   socket.on("enterRoom", function(docId) {
     socket.join(docId);
+    console.log("room entered");
+    socket.emit("roomEntered", docId);
   });
 
   socket.on("leaveRoom", function(docId) {
     socket.leave(docId);
   });
 });
+
 app.use("/", auth(passport));
 app.use("/", docRoutes);
 
 const port = process.env.PORT || 5000;
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+server.listen(port, () =>
+  console.log(`Example app listening on port ${port}!`)
+);
 
 module.exports = app;

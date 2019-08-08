@@ -3,78 +3,71 @@ import ReactDOM from "react-dom";
 import { Route, Link, BrowserRouter as Router } from "react-router-dom";
 import EditingInterface from "../components/EditingInterface.js";
 import { FaChevronLeft, FaRegUser } from "react-icons/fa";
-import socketIOClient from "socket.io-client";
 
 class DocumentPortal extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			username: "",
-			docs: [],
-			docName: "",
-		};
-	}
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: "",
+      docs: [],
+      docName: ""
+    };
+  }
 
-	async componentDidMount() {
-		const user = await fetch("http://localhost:5000/user", {
-			method: "GET",
-			credentials: "include",
-			redirect: "follow",
-			headers: {
-				"Content-Type": "application/json",
-			},
-		});
-		const userJSON = await user.json();
-		console.log("the user json is", userJSON.username);
-		this.setCurrentUser(userJSON.username, userJSON.documents);
-	}
+  async componentDidMount() {
+    const user = await fetch("http://localhost:5000/user", {
+      method: "GET",
+      credentials: "include",
+      redirect: "follow",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    const userJSON = await user.json();
+    console.log("the user json is", userJSON.username);
+    this.setCurrentUser(userJSON.username, userJSON.documents);
+  }
 
-	setCurrentUser(username, docs) {
-		console.log("get current user is called", username);
+  setCurrentUser(username, docs) {
+    console.log("get current user is called", username);
 
-		this.setState({
-			username,
-			docs,
-		});
-	}
+    this.setState({
+      username,
+      docs
+    });
+  }
 
-	async createDoc() {
-		// I just want to make a request so that the server logs us out
-		const yeet = await fetch("http://localhost:5000/createDoc", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			redirect: "follow",
-			credentials: "include",
-			body: JSON.stringify({
-				title: this.state.docName,
-				password: "temp",
-			}),
-		});
-		if (yeet) {
-			const user = await fetch("http://localhost:5000/user", {
-				method: "GET",
-				credentials: "include",
-				redirect: "follow",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-			const userJSON = await user.json();
-			console.log("the user json is", userJSON.username);
-			this.setCurrentUser(userJSON.username, userJSON.documents);
-			this.setState({
-				docName: "",
-			});
-		}
-	}
-
-	openDocument(docId) { //function called when user clicks on document name
-		const socket = socketIOClient(this.state.endpoint);
-		socket.emit('enterRoom', docId);
-	}
-
+  async createDoc() {
+    // I just want to make a request so that the server logs us out
+    const yeet = await fetch("http://localhost:5000/createDoc", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      redirect: "follow",
+      credentials: "include",
+      body: JSON.stringify({
+        title: this.state.docName,
+        password: "temp"
+      })
+    });
+    if (yeet) {
+      const user = await fetch("http://localhost:5000/user", {
+        method: "GET",
+        credentials: "include",
+        redirect: "follow",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      const userJSON = await user.json();
+      console.log("the user json is", userJSON.username);
+      this.setCurrentUser(userJSON.username, userJSON.documents);
+      this.setState({
+        docName: ""
+      });
+    }
+  }
 	render() {
 		console.log(this.state.username);
 		return (
@@ -133,26 +126,26 @@ class DocumentPortal extends React.Component {
 }
 
 const styles = {
-	container: {
-		display: "flex",
-		width: "90%",
-		margin: "auto",
-		padding: "10px",
-	},
-	content: {
-		flex: 1,
-		alignContent: "center",
-	},
-	title: { textAlign: "center" },
-	subtitle: { textAlign: "left" },
-	documentsBox: {
-		border: "1px solid black",
-		height: "200px",
-		margin: "0 auto",
-	},
-	user: {
-		textAlign: "right",
-	},
+  container: {
+    display: "flex",
+    width: "90%",
+    margin: "auto",
+    padding: "10px"
+  },
+  content: {
+    flex: 1,
+    alignContent: "center"
+  },
+  title: { textAlign: "center" },
+  subtitle: { textAlign: "left" },
+  documentsBox: {
+    border: "1px solid black",
+    height: "200px",
+    margin: "0 auto"
+  },
+  user: {
+    textAlign: "right"
+  }
 };
 
 export default DocumentPortal;
