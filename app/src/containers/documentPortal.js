@@ -76,7 +76,6 @@ class DocumentPortal extends React.Component {
 				<div style={styles.content}>
 					<div style={styles.user}>
 						<span style={{ marginRight: "15px" }}>
-
 							Welcome to your Portal, {this.state.username}{" "}
 						</span>
 						<button onClick={this.logOut}>
@@ -108,7 +107,7 @@ class DocumentPortal extends React.Component {
 						<ul>
 							{this.state.docs.map(doc => (
 								<li>
-									<Link to={"/doc/" + doc._id}>{doc.title}</Link>
+									<Link to={"/docs/" + doc._id}>{doc.title}</Link>
 								</li>
 							))}
 						</ul>

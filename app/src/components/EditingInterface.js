@@ -12,7 +12,7 @@ import {
 	FaUnderline,
 	FaEdge,
 } from "react-icons/fa";
-import { Editor, EditorState, RichUtils, Modifier } from "draft-js";
+import { Editor, EditorState, RichUtils, Modifier, convertToRaw, convertFromRaw } from "draft-js";
 import "../App.css";
 import { Map } from "immutable";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -24,20 +24,18 @@ class EditingInterface extends React.Component {
 		this.state = {
 			editorState: EditorState.createEmpty(),
 			bold: false,
+			things: props,
 		};
 		this.onChange = editorState => this.setState({ editorState });
 		this.handleKeyCommand = this.handleKeyCommand.bind(this);
-    this.focus = () => this.editor.focus();
-    this._onClick = e => {
-      //this is for the bold, italic...
-      e.preventDefault();
-      this.onChange(
-        RichUtils.toggleInlineStyle(this.state.editorState, e.target.name)
-      );
-      // console.log(e.target.name);
-    };
-
-}
+		this.focus = () => this.editor.focus();
+		this._onClick = e => {
+			//this is for the bold, italic...
+			e.preventDefault();
+			this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, e.target.name));
+			// console.log(e.target.name);
+		};
+	}
 
 	handleKeyCommand(command, editorState) {
 		const newState = RichUtils.handleKeyCommand(editorState, command);
@@ -92,6 +90,61 @@ class EditingInterface extends React.Component {
 			})
 		);
 		this.onChange(EditorState.push(editorState, finalContent, "change-inline-style"));
+	}
+
+	async componentDidMount(props) {
+		this.loadPrevious();
+		console.log("These are props things", this.state.props);
+	}
+
+	async loadPrevious() {
+		const link = "http://localhost:5000/docs/" + this.props.id + "/getBody";
+		console.log("this is in load previous:", this.props.id);
+		console.log("you might be a dumby?:", this.props.bodyId);
+
+		const response = await fetch(link, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			redirect: "follow",
+			credentials: "include",
+			body: JSON.stringify({
+				bodyId: this.props.bodyId,
+			}),
+		});
+		const responseJSON = await response.json();
+		if (responseJSON.data) {
+			const rawContent = responseJSON.data.content;
+			const parsedContent = JSON.parse(rawContent);
+			console.log(parsedContent);
+			this.setState({
+				editorState: EditorState.createWithContent(convertFromRaw(parsedContent)),
+			});
+		}
+	}
+
+	async handleSave(props) {
+		const link = "http://localhost:5000/docs/" + this.props.id + "/save";
+		console.log(this.props);
+		const contentState = this.state.editorState.getCurrentContent();
+		const content = JSON.stringify(convertToRaw(contentState));
+		console.log(content);
+		console.log(link);
+		const response = await fetch(link, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			redirect: "follow",
+			credentials: "include",
+			body: JSON.stringify({
+				content,
+			}),
+		});
+		// const responseJSON = await response.json();
+		// console.log(responseJSON);
+		console.log(await response.text());
 	}
 
 	render() {
@@ -190,24 +243,31 @@ class EditingInterface extends React.Component {
 					</div>
 				</div>
 
-
-        <div
-          style={styles.textbox}
-        >
-          <Editor
-            blockStyleFn={this.blockStyleFunc}
-            editorState={this.state.editorState}
-            onChange={this.onChange}
-            handleKeyCommand={this.handleKeyCommand}
-            ref={Editor => Editor && Editor.focus()}
-            customStyleMap={styleMap}
-          />
-        </div>
+				<div style={styles.textbox}>
+					<Editor
+						blockStyleFn={this.blockStyleFunc}
+						editorState={this.state.editorState}
+						onChange={this.onChange}
+						handleKeyCommand={this.handleKeyCommand}
+						ref={Editor => Editor && Editor.focus()}
+						customStyleMap={styleMap}
+					/>
+				</div>
 
 				<div style={styles.saveButton}>
-					<button variant="success" size="sm">
+					<button
+						variant="success"
+						size="sm"
+						onClick={this.handleSave.bind(this, this.props)}>
 						<FaSave />
 						Save Changes
+					</button>
+					<button
+						variant="success"
+						size="sm"
+						onClick={this.loadPrevious.bind(this, this.props)}>
+						<FaSave />
+						Load
 					</button>
 				</div>
 			</div>
@@ -249,24 +309,24 @@ const styleMap = {
 };
 
 const styles = {
-  saveButton: {
-    justifyContent: "flex-end",
-    alignContent: "flex-end",
-    flexDirection: "row-reverse"
-  },
-  textbox: {
+	saveButton: {
+		justifyContent: "flex-end",
+		alignContent: "flex-end",
+		flexDirection: "row-reverse",
+	},
+	textbox: {
 		border: "1px solid black",
 		height: "80%",
 		padding: "5px",
 		alignItems: "center",
-		justifyContent: "center"
-  },
-  controls: {
-    fontFamily: "'Helvetica', sans-serif",
-    fontSize: 14,
-    marginBottom: 10,
-    userSelect: "none"
-  },
+		justifyContent: "center",
+	},
+	controls: {
+		fontFamily: "'Helvetica', sans-serif",
+		fontSize: 14,
+		marginBottom: 10,
+		userSelect: "none",
+	},
 	toolbar: {
 		backgroundColor: "rgba(110, 117, 124, 1.0)",
 		display: "flex",

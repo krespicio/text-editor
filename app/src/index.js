@@ -15,7 +15,7 @@ const routing = (
 		<Route exact path="/login" component={Login} />
 		<Route exact path="/signup" component={Signup} />
 		<Route exact path="/portal" component={DocumentPortal} />
-		<Route path="/doc/:docId" component={Document} />
+		<Route path="/docs/:docId" component={Document} />
 	</Router>
 );
 
