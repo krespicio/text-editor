@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { Document, User } = require("../models");
+const { Document, User, Body} = require("../models");
 const mongoose = require("mongoose");
 
 //adds a collaborator to the document
@@ -67,7 +67,7 @@ router.post("/docs/:docId/save", function(req, res) {
 });
 
 router.get("/docs", function(req, res) {
-	Document.find(function(err, result) {
+	Document.find({owner: req.user._id}, function(err, result) {
 		if (err) {
 			res.json({ success: false, error: err, data: [] });
 		}
@@ -168,30 +168,6 @@ router.post("/docs/:docId/remCollab", function(req, res) {
 	});
 });
 
-router.get("/docs", function(req, res) {
-	Document.find(function(err, result) {
-		if (err) {
-			res.json({ success: false, error: err, data: [] });
-		}
-
-		if (!err) {
-			res.json({ success: true, error: "", data: result });
-		}
-	});
-});
-
-router.get("/docs/:docId", function(req, res) {
-	let docId = req.params.docId;
-	Document.findOne({ _id: docId }, function(err, result) {
-		if (err) {
-			console.log(err);
-			res.json({ success: false, error: err, data: null });
-		}
-		if (!err) {
-			res.json({ success: true, error: "", data: result });
-		}
-	});
-});
 
 router.get("/docs/:docId/allCollabs", function(req, res) {
 	let docId = req.params.docId;
