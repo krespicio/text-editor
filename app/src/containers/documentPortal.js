@@ -95,19 +95,20 @@ class DocumentPortal extends React.Component {
 								docName: e.target.value,
 							})
 						}
-						style={{ width: "200px" }}
+						style={{ width: "300px" }}
 					/>
 					<button onClick={() => this.createDoc()}>Create Document</button>
 					<br />
 					<div style={styles.title}>
 						<h2> Document Portal </h2>
 					</div>
+          <br />
 					<div style={styles.documentsBox}>
 						<h3 style={styles.title}> My Documents </h3>
 						<ul>
 							{this.state.docs.map(doc => (
 								<li>
-									<Link to={"/doc/" + doc._id}><button onClick={() => this.openDocument(doc._id)}>{doc.title}</button></Link>
+									<Link to={"/docs/" + doc._id}>{doc.title}</Link>
 								</li>
 							))}
 						</ul>
@@ -116,7 +117,7 @@ class DocumentPortal extends React.Component {
 						type="text"
 						name="createSharedDocument"
 						placeholder="Enter Document iD to be Shared Here"
-						style={{ width: "200px" }}
+						style={{ width: "300px" }}
 					/>
 					<button>Add Shared Document</button>
 				</div>
