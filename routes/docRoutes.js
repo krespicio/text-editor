@@ -171,7 +171,7 @@ router.post("/docs/:docId/remCollab", function(req, res) {
 });
 
 router.post("/docs/:docId/getBody", (req, res) => {
-	const bodyId = req.bodgity.bodyId;
+	const bodyId = req.body.bodyId;
 	Body.findOne({ _id: bodyId }, (err, bod) => {
 		if (err) {
 			res.json({ sucess: false, error: err });
