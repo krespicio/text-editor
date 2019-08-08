@@ -69,6 +69,7 @@ class DocumentPortal extends React.Component {
     }
   }
 
+
   render() {
     console.log(this.state.username);
     return (

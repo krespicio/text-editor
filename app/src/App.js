@@ -7,12 +7,13 @@ import EditingInterface from "./components/EditingInterface";
 import Signup from "./components/signup.js";
 
 class App extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      endpoint: "http://localhost:5000"
-    };
-  }
+	constructor() {
+		super();
+		this.state = {
+			endpoint: "http://localhost:5000",
+		};
+	}
+
 
   //     componentDidMount() {
   // 	  const socket = socketIOClient(this.state.endpoint);
@@ -29,6 +30,5 @@ class App extends React.Component {
   //     <Route exact path="/signup" component={Signup} />
   //     <Route exact path="/" component={Document} />
   //   </Router>
-}
 
 export default App;
