@@ -14,15 +14,15 @@ class App extends React.Component {
     };
   }
 
-    componentDidMount() {
-	  const socket = socketIOClient(this.state.endpoint);
-	  socket.on('save', )
-    }
-
-  render() {
-	const socket = socketIOClient(this.state.endpoint);
-    return()
-  }
+  //   componentDidMount() {
+	//   const socket = socketIOClient(this.state.endpoint);
+	//   socket.on('save', )
+  //   }
+  //
+  // render() {
+	// const socket = socketIOClient(this.state.endpoint);
+  //   return()
+  // }
 
 //   <Router>
 //     <Route exact path="/login" component={Login} />

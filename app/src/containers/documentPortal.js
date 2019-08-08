@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Route, Link, BrowserRouter, Button, as Router } from "react-router-dom";
+import { Route, Link, BrowserRouter as Router } from "react-router-dom";
 import EditingInterface from "../components/EditingInterface.js";
 import { FaChevronLeft, FaRegUser } from "react-icons/fa";
 import socketIOClient from "socket.io-client";
@@ -114,7 +114,7 @@ class DocumentPortal extends React.Component {
 						<ul>
 							{this.state.docs.map(doc => (
 								<li>
-									<Link to={"/doc/" + doc._id}><Button onClick={() => this.openDocument(doc._id)}>{doc.title}</Button></Link>
+									<Link to={"/doc/" + doc._id}><button onClick={() => this.openDocument(doc._id)}>{doc.title}</button></Link>
 								</li>
 							))}
 						</ul>
