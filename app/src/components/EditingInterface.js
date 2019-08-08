@@ -20,12 +20,39 @@ import {
   convertToRaw,
   convertFromRaw,
   getDefaultKeyBinding,
-	KeyBindingUtil
+  KeyBindingUtil,
+  DefaultDraftBlockRenderMap
 } from "draft-js";
 import "../App.css";
-import { Map } from "immutable";
+import Immutable, { Map } from "immutable";
 import Dropdown from "react-bootstrap/Dropdown";
 import socketIOClient from "socket.io-client";
+
+// function OrderedListComponent(props) {
+//   console.log("eff");
+//   console.log(props);
+//   return <div className="orderedlist"> {props.children}</div>;
+// }
+// class MyCustomBlock extends React.Component {
+//   constructor(props) {
+//     super(props);
+//   }
+//
+//   render() {
+//     console.log(this.props);
+// 		console.log('rendering')
+// 		return <li>fuck</li>
+//     return (
+//       <div style={{ flex: "right", justifyContent: "center" }}>
+//         <ul className="MyCustomBlock">
+//           {/* here, this.props.children contains a <section> container, as that was the matching element */}
+//           {this.props.children}
+//         </ul>
+//       </div>
+//     );
+//   }
+// }
+
 
 class EditingInterface extends React.Component {
   constructor(props) {
@@ -72,19 +99,18 @@ class EditingInterface extends React.Component {
     };
   }
 
-	keyBindingFn(e){
-	if (e.keyCode === 83 && KeyBindingUtil.hasCommandModifier(e)) {
-		return 'save';
-	}
-	return getDefaultKeyBinding(e);
-}
-
+  keyBindingFn(e) {
+    if (e.keyCode === 83 && KeyBindingUtil.hasCommandModifier(e)) {
+      return "save";
+    }
+    return getDefaultKeyBinding(e);
+  }
 
   handleKeyCommand(command, editorState) {
-		if(command === 'save'){
-			this.handleSave();
-			return "handled"
-		}
+    if (command === "save") {
+      this.handleSave();
+      return "handled";
+    }
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       this.onChange(newState);
@@ -118,6 +144,18 @@ class EditingInterface extends React.Component {
     console.log(stringStyle);
     return stringStyle;
   }
+
+  // myBlockRenderer(contentBlock) {
+  //   const type = contentBlock.getType();
+  //   if (type === "ordered-list-item") {
+  //     return {
+  //       wrapper: <MyCustomBlock />,
+  //       props: {
+  //         alignment: contentBlock.getData().get("alignment")
+  //       }
+  //     };
+  //   }
+  // }
 
   styleWholeSelectedBlocksModifier(editorState, style) {
     let currentContent = editorState.getCurrentContent();
@@ -329,10 +367,11 @@ class EditingInterface extends React.Component {
         <div style={styles.textbox}>
           <Editor
             blockStyleFn={this.blockStyleFunc}
+            // blockRendererFn={this.myBlockRenderer}
             editorState={this.state.editorState}
             onChange={this.onChange}
             handleKeyCommand={this.handleKeyCommand}
-						keyBindingFn={this.keyBindingFn}
+            keyBindingFn={this.keyBindingFn}
             ref={Editor => Editor && Editor.focus()}
             customStyleMap={styleMap}
           />
