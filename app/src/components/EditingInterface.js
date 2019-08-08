@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import {
 	FaAlignLeft,
@@ -16,6 +16,7 @@ import { Editor, EditorState, RichUtils, Modifier, convertToRaw, convertFromRaw 
 import "../App.css";
 import { Map } from "immutable";
 import Dropdown from "react-bootstrap/Dropdown";
+import socketIOClient from "socket.io-client";
 
 class EditingInterface extends React.Component {
 	constructor(props) {
@@ -24,7 +25,6 @@ class EditingInterface extends React.Component {
 		this.state = {
 			editorState: EditorState.createEmpty(),
 			bold: false,
-			things: props,
 		};
 		this.onChange = editorState => this.setState({ editorState });
 		this.handleKeyCommand = this.handleKeyCommand.bind(this);
@@ -124,7 +124,7 @@ class EditingInterface extends React.Component {
 		}
 	}
 
-	async handleSave(props) {
+	async handleSave() {
 		const link = "http://localhost:5000/docs/" + this.props.id + "/save";
 		console.log(this.props);
 		const contentState = this.state.editorState.getCurrentContent();
@@ -165,7 +165,6 @@ class EditingInterface extends React.Component {
 			{ name: "ordered-list-item", icon: <FaListOl /> },
 			{ name: "unordered-list-item", icon: <FaListUl /> },
 		];
-
 		return (
 			<div>
 				<div style={styles.toolbar}>
@@ -180,13 +179,12 @@ class EditingInterface extends React.Component {
 									<Dropdown.Item
 										eventKey={style}
 										name={style}
-										onClick={this._onClick.bind(this)}>
+										onMouseDown={this._onClick.bind(this)}>
 										{style}
 									</Dropdown.Item>
 								))}
 							</Dropdown.Menu>
 						</Dropdown>
-
 						<Dropdown style={{ display: "inline-block" }}>
 							<Dropdown.Toggle id="dropdown-basic" size="sm" variant="secondary">
 								{" "}
@@ -204,7 +202,6 @@ class EditingInterface extends React.Component {
 							</Dropdown.Menu>
 						</Dropdown>
 					</div>
-
 					<div id="other buttons" style={{ justifyContent: "flex-end" }}>
 						{textStyles.map(style => (
 							<button
@@ -214,12 +211,11 @@ class EditingInterface extends React.Component {
 								{style.icon}
 							</button>
 						))}
-
 						{paragraphStyles.map(style => {
 							return (
 								<button
 									key={style.name}
-									onClick={() =>
+									onMouseDown={() =>
 										this.styleParagraphs(this.state.editorState, style.name)
 									}
 									name={style.name}>
@@ -230,7 +226,7 @@ class EditingInterface extends React.Component {
 						{listStyles.map(style => (
 							<button
 								key={style.name}
-								onClick={() =>
+								onMouseDown={() =>
 									this.styleWholeSelectedBlocksModifier(
 										this.state.editorState,
 										style.name
@@ -242,7 +238,6 @@ class EditingInterface extends React.Component {
 						))}
 					</div>
 				</div>
-
 				<div style={styles.textbox}>
 					<Editor
 						blockStyleFn={this.blockStyleFunc}
@@ -253,7 +248,6 @@ class EditingInterface extends React.Component {
 						customStyleMap={styleMap}
 					/>
 				</div>
-
 				<div style={styles.saveButton}>
 					<button
 						variant="success"

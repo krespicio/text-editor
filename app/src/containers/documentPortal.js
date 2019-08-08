@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { Route, Link, BrowserRouter as Router } from "react-router-dom";
 import EditingInterface from "../components/EditingInterface.js";
 import { FaChevronLeft, FaRegUser } from "react-icons/fa";
+import socketIOClient from "socket.io-client";
 
 class DocumentPortal extends React.Component {
 	constructor(props) {
@@ -67,6 +68,12 @@ class DocumentPortal extends React.Component {
 				docName: "",
 			});
 		}
+	}
+
+	openDocument(docId) {
+		//function called when user clicks on document name
+		const socket = socketIOClient(this.state.endpoint);
+		socket.emit("enterRoom", docId);
 	}
 
 	render() {

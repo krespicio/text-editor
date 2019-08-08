@@ -67,7 +67,7 @@ router.post("/docs/:docId/save", function(req, res) {
 });
 
 router.get("/docs", function(req, res) {
-	Document.find(function(err, result) {
+	Document.find({ owner: req.user._id }, function(err, result) {
 		if (err) {
 			console.log("json failure sent");
 			res.json({ success: false, error: err, data: [] });
@@ -171,7 +171,7 @@ router.post("/docs/:docId/remCollab", function(req, res) {
 });
 
 router.post("/docs/:docId/getBody", (req, res) => {
-	const bodyId = req.body.bodyId;
+	const bodyId = req.bodgity.bodyId;
 	Body.findOne({ _id: bodyId }, (err, bod) => {
 		if (err) {
 			res.json({ sucess: false, error: err });
