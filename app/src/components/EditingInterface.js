@@ -35,7 +35,31 @@ class EditingInterface extends React.Component {
       this.onChange(
         RichUtils.toggleInlineStyle(this.state.editorState, e.target.name)
       );
-      // console.log(e.target.name);
+      console.log(e.target.name);
+    };
+		this._onBoldClick = e => {
+      e.preventDefault();
+      this.onChange(
+        RichUtils.toggleInlineStyle(this.state.editorState, "BOLD")
+      );
+    };
+		this._onItalicClick = e => {
+      e.preventDefault();
+      this.onChange(
+        RichUtils.toggleInlineStyle(this.state.editorState, "ITALIC")
+      );
+    };
+		this._onUnderlineClick = e => {
+      e.preventDefault();
+      this.onChange(
+        RichUtils.toggleInlineStyle(this.state.editorState, "UNDERLINE")
+      );
+    };
+		this._onCodeClick = e => {
+      e.preventDefault();
+      this.onChange(
+        RichUtils.toggleInlineStyle(this.state.editorState, "CODE")
+      );
     };
   }
 
@@ -99,12 +123,12 @@ class EditingInterface extends React.Component {
   }
 
   render() {
-    const textStyles = [
-      { name: "BOLD", icon: <FaBold /> },
-      { name: "ITALIC", icon: <FaItalic /> },
-      { name: "UNDERLINE", icon: <FaUnderline /> },
-      { name: "CODE", icon: <FaEdge /> }
-    ];
+    // const textStyles = [
+    //   { name: "BOLD", icon: <FaBold /> },
+    //   { name: "ITALIC", icon: <FaItalic /> },
+    //   { name: "UNDERLINE", icon: <FaUnderline /> },
+    //   { name: "CODE", icon: <FaEdge /> }
+    // ];
     const paragraphStyles = [
       { name: "LEFT", icon: <FaAlignLeft /> },
       { name: "CENTER", icon: <FaAlignCenter /> },
@@ -143,7 +167,7 @@ class EditingInterface extends React.Component {
                   <Dropdown.Item
                     eventKey={style}
                     name={style}
-                    onClick={this._onClick.bind(this)}
+                    onMouseDown={this._onClick.bind(this)}
                   >
                     {style}
                   </Dropdown.Item>
@@ -175,21 +199,50 @@ class EditingInterface extends React.Component {
           </div>
 
           <div id="other buttons" style={{ justifyContent: "flex-end" }}>
-            {textStyles.map(style => (
-              <button
-                key={style.name}
-                onMouseDown={this._onClick.bind(this)}
-                name={style.name}
-              >
-                {style.icon}
-              </button>
-            ))}
-
+{
+						// {textStyles.map(style => (
+            //   <button
+            //     key={style.name}
+            //     onMouseDown={this._onClick.bind(this)}
+            //     name={style.name}
+            //   >
+            //     {style.icon}
+            //   </button>
+            // ))}
+					}
+						<button
+							key={"BOLD"}
+							onMouseDown={this._onBoldClick.bind(this)}
+							name={"BOLD"}
+						>
+							<FaBold />
+						</button>
+						<button
+							key={"UNDERLINE"}
+							onMouseDown={this._onUnderlineClick.bind(this)}
+							name={"UNDERLINE"}
+						>
+							<FaUnderline />
+						</button>
+						<button
+							key={"ITALIC"}
+							onMouseDown={this._onItalicClick.bind(this)}
+							name={"ITALIC"}
+						>
+							<FaItalic />
+						</button>
+						<button
+							key={"CODE"}
+							onMouseDown={this._onCodeClick.bind(this)}
+							name={"CODE"}
+						>
+							<FaEdge />
+						</button>
             {paragraphStyles.map(style => {
               return (
                 <button
                   key={style.name}
-                  onClick={() =>
+                  onMouseDown={() =>
                     this.styleParagraphs(this.state.editorState, style.name)
                   }
                   name={style.name}
@@ -201,7 +254,7 @@ class EditingInterface extends React.Component {
             {listStyles.map(style => (
               <button
                 key={style.name}
-                onClick={() =>
+                onMouseDown={() =>
                   this.styleWholeSelectedBlocksModifier(
                     this.state.editorState,
                     style.name
