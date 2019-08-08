@@ -24,12 +24,10 @@ class EditingInterface extends React.Component {
     // this.editor = React.createRef();
     this.state = {
       editorState: EditorState.createEmpty(),
-      bold: false,
-      endpoint: "http://localhost:5000"
+      bold: false
     };
     this.onChange = editorState => this.setState({ editorState });
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
-
     this.focus = () => this.editor.focus();
     this._onClick = e => {
       //this is for the bold, italic...
@@ -37,7 +35,7 @@ class EditingInterface extends React.Component {
       this.onChange(
         RichUtils.toggleInlineStyle(this.state.editorState, e.target.name)
       );
-      console.log(e.target.name);
+      // console.log(e.target.name);
     };
   }
 
@@ -53,7 +51,6 @@ class EditingInterface extends React.Component {
   blockStyleFunc(contentBlock) {
     const type = contentBlock.getType();
     const alignment = contentBlock.getData().get("alignment");
-
     let style = [];
     // console.log(style);
     if (alignment === "LEFT") {
@@ -218,15 +215,7 @@ class EditingInterface extends React.Component {
           </div>
         </div>
 
-        <div
-          style={{
-            border: "1px solid black",
-            height: "80%",
-            padding: "5px",
-            alignItems: "center",
-            justifyContent: "center"
-          }}
-        >
+        <div style={styles.textbox}>
           <Editor
             blockStyleFn={this.blockStyleFunc}
             editorState={this.state.editorState}
@@ -289,9 +278,10 @@ const styles = {
   },
   textbox: {
     border: "1px solid black",
-    height: "200px",
-    margin: "0 auto",
-    maxWidth: "900px"
+    height: "80%",
+    padding: "5px",
+    alignItems: "center",
+    justifyContent: "center"
   },
   controls: {
     fontFamily: "'Helvetica', sans-serif",

@@ -17,6 +17,7 @@ const socketIO = require("socket.io");
 // Import Model
 // Hello
 const auth = require("./routes/Auth");
+const docRoutes = require("./routes/docRoutes");
 
 const app = express();
 
@@ -104,11 +105,7 @@ passport.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.use((err, req, res, next) => {
-// 	if (err) {
-// 		res.status(500).json({ error: err });
-// 	}
-// });
+app.use("/", auth(passport));
 
 // Routes
 app.get("/", (req, res, next) => {
@@ -141,8 +138,8 @@ io.on("connection", socket => {
   });
 });
 app.use("/", auth(passport));
+app.use("/", docRoutes);
 
-app.use("/", auth(passport));
 const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 

@@ -52,7 +52,7 @@ module.exports = function(passport) {
 	// });
 
 	router.get("/login/success", (req, res) => {
-		res.json({ success: true });
+		res.json({ success: true, login: "yeet" });
 		console.log("success", req.user, req.session.user);
 
 		return;
@@ -61,6 +61,21 @@ module.exports = function(passport) {
 	router.get("/login/failure", (req, res) => {
 		res.json({ success: false });
 		return;
+	});
+
+	router.get("/user", async (req, res) => {
+		if (req.user) {
+			console.log("call of the user", req.user._id);
+			// return res.json(req.user);
+			const user = await User.findOne({ _id: req.user._id })
+				.populate("documents")
+				.exec((err, user) => {
+					console.log(user);
+					if (user) {
+						return res.json(user);
+					}
+				});
+		}
 	});
 
 	//GET Logout page
@@ -72,102 +87,100 @@ module.exports = function(passport) {
 		});
 	});
 
-	
-router.post("/createDoc", function(req, res){
-    
-    let newDoc = new Document({
-        title: req.body.title, 
-        password: req.body.password, 
-        owner: req.user._id, 
-        collaborators: [req.user._id], 
-        body: []
-    }); 
+	// router.post("/createDoc", function(req, res) {
+	// 	let newDoc = new Document({
+	// 		title: req.body.title,
+	// 		password: req.body.password,
+	// 		owner: req.user._id,
+	// 		collaborators: [req.user._id],
+	// 		body: [],
+	// 	});
 
-    newDoc.save(function(err,result){
-        if (err) {
-            console.log(err); 
-            res.json({success: false, error: err});
-        }
-        if (!err) {
-            console.log('successfully saved');
-            User.findOne({_id: req.user._id}, function(err, user){
-                if (err) {res.json({success: false, error: err})}
-                if (!err) {
-                    user.documents.push(newDoc); 
-                    user.save(); 
-                    res.json({success: true, error: 'no error'});
-                }
-            })
-        }
-    });
-    
-});
+	// 	newDoc.save(function(err, result) {
+	// 		if (err) {
+	// 			console.log(err);
+	// 			res.json({ success: false, error: err });
+	// 		}
+	// 		if (!err) {
+	// 			console.log("successfully saved");
+	// 			User.findOne({ _id: req.user._id }, function(err, user) {
+	// 				if (err) {
+	// 					res.json({ success: false, error: err });
+	// 				}
+	// 				if (!err) {
+	// 					user.documents.push(newDoc);
+	// 					user.save();
+	// 					res.json({ success: true, error: "no error" });
+	// 				}
+	// 			});
+	// 		}
+	// 	});
+	// });
 
-router.post("/docs/:docId/save", function(req, res){
+	// router.post("/docs/:docId/save", function(req, res) {
+	// 	let docId = req.params.docId;
+	// 	let body = new Body({
+	// 		timestamp: new Date(),
+	// 		content: req.body.content,
+	// 	});
 
-    let docId = req.params.docId;
-    let body = new Body ({
-        timestamp: new Date(),
-        content: req.body.content
-    }); 
+	// 	Document.findOne({ _id: docId }, function(err, result) {
+	// 		if (err) {
+	// 			console.log(err);
+	// 			res.json({ success: false, error: err });
+	// 		}
 
-    Document.findOne({_id: docId}, function(err, result){
-        if (err) {
-            console.log(err); 
-            res.json({success: false, error: err}); 
-        }
+	// 		if (!err) {
+	// 			console.log(result);
+	// 			body.save();
+	// 			result.body.push(body);
+	// 			result.save(function(err, success) {
+	// 				if (err) {
+	// 					res.json({ success: false, error: err });
+	// 				}
+	// 				if (success) {
+	// 					console.log("successfully saved the updated document");
+	// 					res.json({ success: true, error: "" });
+	// 				}
+	// 			});
+	// 		}
+	// 	});
+	// });
 
-        if(!err) {
-            console.log(result); 
-            body.save();
-            result.body.push(body);
-            result.save(function(err, success){
-                if (err) {
-                    res.json({success: false, error: err}); 
-                }
-                if (success) {
-                    console.log('successfully saved the updated document')
-                    res.json({success: true, error: ''}); 
-                }
-            }); 
-            
-        }
-    })
-});
+	// router.post("/docs/:docId/addCollab", function(req, res) {
+	// 	let collaborator = req.body.collabId;
+	// 	let docId = req.params.docId;
 
-router.post("/docs/:docId/addCollab", function(req, res){
-    let collaborator = req.body.collabId;
-    let docId = req.params.docId;
+	// 	Document.findOne({ _id: docId }, function(err, result) {
+	// 		if (err) {
+	// 			res.json({ success: false, error: err });
+	// 		}
+	// 		if (!err) {
+	// 			console.log(result);
+	// 			result.collaborators.push(collaborator);
+	// 			result.save(function(err, success) {
+	// 				if (err) {
+	// 					res.json({ success: false, error: err });
+	// 				}
 
-    Document.findOne({_id: docId}, function(err, result){
-        if (err) {
-            res.json({success: false, error: err}); 
-        }
-        if (!err) {
-            console.log(result);
-            result.collaborators.push(collaborator); 
-            result.save(function(err, success){
-                if (err){
-                    res.json({success: false, error: err});
-                }
-
-                if(!err) {
-					console.log('successfully added a collaborator');
-					User.findOne({_id: collaborator}, function(err, user){
-						if (err) {res.json({success: false, error: err})}
-						if (!err) {
-							user.documents.push(result); 
-							user.save(); 
-							res.json({success: true, error: ''})
-						}
-					})
-                    res.json({success: true, error: ''});
-                }
-            })
-        }
-    })
-});
-
+	// 				if (!err) {
+	// 					console.log("successfully added a collaborator");
+	// 					User.findOne({ _id: collaborator }, function(err, user) {
+	// 						if (err) {
+	// 							res.json({ success: false, error: err });
+	// 						}
+	// 						if (!err) {
+	// 							user.documents.push(result);
+	// 							user.save();
+	// 							res.json({ success: true, error: "" });
+	// 						}
+	// 					});
+	// 					res.json({ success: true, error: "" });
+	// 				}
+	// 			});
+	// 		}
+	// 	});
+	// });
 
 	// router.post("/docs/:docId/remCollab", function(req, res){
 	// 	console.log(req.user);
@@ -199,9 +212,9 @@ router.post("/docs/:docId/addCollab", function(req, res){
 	// 	})
 	// });
 	router.use((req, res, next) => {
-		console.log("cookies", req.cookies, req.session);
+		// console.log("cookies", req.cookies, req.session);
 
-		console.log("This is the user in the use", req.user);
+		// console.log("This is the user in the use", req.user);
 		if (!req.user) {
 			res.status(401).json({
 				success: false,
@@ -212,9 +225,9 @@ router.post("/docs/:docId/addCollab", function(req, res){
 		next();
 	});
 
-	router.post("/user", (req, res) => {
-		res.json({ success: true });
-	});
+	// router.post("/user", (req, res) => {
+	// 	res.json({ success: true });
+	// });
 
 	return router;
 };

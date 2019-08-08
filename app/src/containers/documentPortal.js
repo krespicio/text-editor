@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Route, Link, BrowserRouter as Router } from "react-router-dom";
+import { Route, Link, BrowserRouter, Button, as Router } from "react-router-dom";
 import EditingInterface from "../components/EditingInterface.js";
 import { FaChevronLeft, FaRegUser } from "react-icons/fa";
 import socketIOClient from "socket.io-client";
@@ -9,18 +9,14 @@ class DocumentPortal extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			user: "Decadence",
-			endpoint: "http://localhost:5000", //socket stuff
-			documents: [] //added documents
+			username: "",
+			docs: [],
+			docName: "",
 		};
 	}
 
-	componentDidMount(){ //idk what this does but it might be useful later?
-		const socket = socketIOClient(this.state.endpoint);
-	}
-
-	async getCurrentUser() {
-		const user = await fetch("http://localhost:5000/:userId", {
+	async componentDidMount() {
+		const user = await fetch("http://localhost:5000/user", {
 			method: "GET",
 			credentials: "include",
 			redirect: "follow",
@@ -29,21 +25,49 @@ class DocumentPortal extends React.Component {
 			},
 		});
 		const userJSON = await user.json();
-		console.log(userJSON);
-		this.setState({
-			user: userJSON.data.name; //name of the user
-		})
+		console.log("the user json is", userJSON.username);
+		this.setCurrentUser(userJSON.username, userJSON.documents);
 	}
 
-	async getDocuments() { //gets the documents of the user
-		const documents = await fetch("http://localhost:5000/:userId/docs", {
-			method: "GET",
+	setCurrentUser(username, docs) {
+		console.log("get current user is called", username);
+
+		this.setState({
+			username,
+			docs,
+		});
+	}
+
+	async createDoc() {
+		// I just want to make a request so that the server logs us out
+		const yeet = await fetch("http://localhost:5000/createDoc", {
+			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
+			redirect: "follow",
+			credentials: "include",
+			body: JSON.stringify({
+				title: this.state.docName,
+				password: "temp",
+			}),
 		});
-		const documentsJSON = await documents.json();
-		this.setState({documents: documentsJSON.data})
+		if (yeet) {
+			const user = await fetch("http://localhost:5000/user", {
+				method: "GET",
+				credentials: "include",
+				redirect: "follow",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+			const userJSON = await user.json();
+			console.log("the user json is", userJSON.username);
+			this.setCurrentUser(userJSON.username, userJSON.documents);
+			this.setState({
+				docName: "",
+			});
+		}
 	}
 
 	openDocument(docId) { //function called when user clicks on document name
@@ -52,16 +76,16 @@ class DocumentPortal extends React.Component {
 	}
 
 	render() {
-		this.getCurrentUser();
+		console.log(this.state.username);
 		return (
 			<div style={styles.container} name="documentPortal" id="documentPortal">
 				<div style={styles.content}>
 					<div style={styles.user}>
 						<span style={{ marginRight: "15px" }}>
-							{" "}
-							Welcome to your Portal, {this.state.user}{" "}
+
+							Welcome to your Portal, {this.state.username}{" "}
 						</span>
-						<button onClick={() => this.logOut()}>
+						<button onClick={this.logOut}>
 							<Link to="/login">
 								<FaRegUser />
 								Log Out
@@ -72,19 +96,28 @@ class DocumentPortal extends React.Component {
 						type="text"
 						name="createDocument"
 						placeholder="Enter Document Name Here"
+						value={this.state.docName}
+						onChange={e =>
+							this.setState({
+								docName: e.target.value,
+							})
+						}
 						style={{ width: "200px" }}
 					/>
-					<button>Create Document</button>
+					<button onClick={() => this.createDoc()}>Create Document</button>
 					<br />
 					<div style={styles.title}>
 						<h2> Document Portal </h2>
 					</div>
 					<div style={styles.documentsBox}>
 						<h3 style={styles.title}> My Documents </h3>
-						{this.state.documents.map((doc) => { //shows list of document names
-							let link = `http://localhost:3000/docs/${doc._id}`
-							<a href={link}><button onClick={() => this.openDocument(doc._id)}>{doc.title}</button></a>
-						})}
+						<ul>
+							{this.state.docs.map(doc => (
+								<li>
+									<Link to={"/doc/" + doc._id}><Button onClick={() => this.openDocument(doc._id)}>{doc.title}</Button></Link>
+								</li>
+							))}
+						</ul>
 					</div>
 					<input
 						type="text"
