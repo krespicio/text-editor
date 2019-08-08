@@ -3,39 +3,48 @@ import { Route, Link, BrowserRouter as Router } from "react-router-dom";
 import ReactDOM from "react-dom";
 import EditingInterface from "../components/EditingInterface.js";
 import { FaChevronLeft } from "react-icons/fa";
+import socketIOClient from "socket.io-client";
 
 class Document extends React.Component {
   constructor(props) {
     super(props);
+    console.log(props);
     this.state = {
       documentId: "",
       documentTitle: "",
       password: "",
       ownerId: "",
       body: [],
-      collaborators: []
+      collaborators: [],
+      endpoint: "http://localhost:5000"
     };
   }
 
   async componentDidMount() {
-    const responseNoJson = await fetch("http://localhost:5000", {
-      credentials: "include",
-      mode: "cors",
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
+    const responseNoJson = await fetch(
+      `http://localhost:5000/docs/${this.props.match.params.docId}`,
+      {
+        credentials: "include",
+        mode: "cors",
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
       }
-    });
+    );
     const response = await responseNoJson.json();
     this.setState({
-      documentId: response._id,
-      documentTitle: response.title,
-      password: response.password,
-      ownerId: response.owner,
-      body: response.body,
-      collaborators: response.collaborators
+      documentId: response.data._id,
+      documentTitle: response.data.title,
+      password: response.data.password,
+      ownerId: response.data.owner,
+      body: response.data.body,
+      collaborators: response.data.collaborators
     });
+
+    const socket = socketIOClient(this.state.endpoint);
+    socket.emit("enterRoom", this.state.documentId);
   }
 
   render() {

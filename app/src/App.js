@@ -14,21 +14,21 @@ class App extends React.Component {
     };
   }
 
-    componentDidMount() {
-	  const socket = socketIOClient(this.state.endpoint);
-	  socket.on('save', )
-    }
+  //     componentDidMount() {
+  // 	  const socket = socketIOClient(this.state.endpoint);
+  // 	  socket.on('save', )
+  //     }
 
-  render() {
-	const socket = socketIOClient(this.state.endpoint);
-    return()
-  }
+  //   render() {
+  // 	const socket = socketIOClient(this.state.endpoint);
+  //     return()
+  //   }
 
-//   <Router>
-//     <Route exact path="/login" component={Login} />
-//     <Route exact path="/signup" component={Signup} />
-//     <Route exact path="/" component={Document} />
-//   </Router>
+  //   <Router>
+  //     <Route exact path="/login" component={Login} />
+  //     <Route exact path="/signup" component={Signup} />
+  //     <Route exact path="/" component={Document} />
+  //   </Router>
 }
 
 export default App;
