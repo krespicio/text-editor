@@ -1,12 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const { Document, User, Body} = require("../models");
+const { Document, User, Body } = require("../models");
 const mongoose = require("mongoose");
 
 //adds a collaborator to the document
 
 router.post("/createDoc", function(req, res) {
-	console.log("hello");
 	let newDoc = new Document({
 		title: req.body.title,
 		password: req.body.password,
@@ -38,6 +37,7 @@ router.post("/createDoc", function(req, res) {
 
 router.post("/docs/:docId/save", function(req, res) {
 	let docId = req.params.docId;
+	console.log("this is the doc id:", docId);
 	let body = new Body({
 		timestamp: new Date(),
 		content: req.body.content,
@@ -58,7 +58,7 @@ router.post("/docs/:docId/save", function(req, res) {
 					res.json({ success: false, error: err });
 				}
 				if (success) {
-					console.log("successfully saved the updated document");
+					console.log("successfully saved the updated document", result.body);
 					res.json({ success: true, error: "" });
 				}
 			});
@@ -67,19 +67,21 @@ router.post("/docs/:docId/save", function(req, res) {
 });
 
 router.get("/docs", function(req, res) {
-	Document.find({owner: req.user._id}, function(err, result) {
+	Document.find({ owner: req.user._id }, function(err, result) {
 		if (err) {
+			console.log("json failure sent");
 			res.json({ success: false, error: err, data: [] });
 		}
 
 		if (!err) {
+			console.log("json success sent");
 			res.json({ success: true, error: "", data: result });
 		}
 	});
 });
 
 router.get("/docs/:docId", function(req, res) {
-	let docId = req.params.docId;
+	const docId = req.params.docId;
 	Document.findOne({ _id: docId }, function(err, result) {
 		if (err) {
 			console.log(err);
@@ -168,21 +170,15 @@ router.post("/docs/:docId/remCollab", function(req, res) {
 	});
 });
 
-
-router.get("/docs/:docId/allCollabs", function(req, res) {
-	let docId = req.params.docId;
-	Document.findOne({ _id: docId }, function(err, result) {
+router.post("/docs/:docId/getBody", (req, res) => {
+	const bodyId = req.bodgity.bodyId;
+	Body.findOne({ _id: bodyId }, (err, bod) => {
 		if (err) {
-			console.log(err);
-			res.json({ success: false, error: err, data: [] });
-		}
-
-		if (!err) {
-			let collabs = result.collaborators;
-			res.json({ success: true, error: "", data: collabs });
+			res.json({ sucess: false, error: err });
+		} else {
+			res.json({ sucess: true, error: "", data: bod });
 		}
 	});
 });
-
 
 module.exports = router;

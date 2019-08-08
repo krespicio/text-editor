@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Route, Link, BrowserRouter, Button, as Router } from "react-router-dom";
+import { Route, Link, BrowserRouter as Router } from "react-router-dom";
 import EditingInterface from "../components/EditingInterface.js";
 import { FaChevronLeft, FaRegUser } from "react-icons/fa";
 import socketIOClient from "socket.io-client";
@@ -70,9 +70,10 @@ class DocumentPortal extends React.Component {
 		}
 	}
 
-	openDocument(docId) { //function called when user clicks on document name
+	openDocument(docId) {
+		//function called when user clicks on document name
 		const socket = socketIOClient(this.state.endpoint);
-		socket.emit('enterRoom', docId);
+		socket.emit("enterRoom", docId);
 	}
 
 	render() {
@@ -82,7 +83,6 @@ class DocumentPortal extends React.Component {
 				<div style={styles.content}>
 					<div style={styles.user}>
 						<span style={{ marginRight: "15px" }}>
-
 							Welcome to your Portal, {this.state.username}{" "}
 						</span>
 						<button onClick={this.logOut}>
@@ -114,7 +114,7 @@ class DocumentPortal extends React.Component {
 						<ul>
 							{this.state.docs.map(doc => (
 								<li>
-									<Link to={"/doc/" + doc._id}><Button onClick={() => this.openDocument(doc._id)}>{doc.title}</Button></Link>
+									<Link to={"/docs/" + doc._id}>{doc.title}</Link>
 								</li>
 							))}
 						</ul>
