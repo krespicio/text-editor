@@ -3,37 +3,49 @@ import { Route, Link, BrowserRouter as Router } from "react-router-dom";
 import ReactDOM from "react-dom";
 import EditingInterface from "../components/EditingInterface.js";
 import { FaChevronLeft } from "react-icons/fa";
+import socketIOClient from "socket.io-client";
 
 class Document extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			documentId: "",
-			documentTitle: "",
-			password: "",
-			ownerId: "",
-			body: [],
-			collaborators: [],
-		};
-	}
+  constructor(props) {
+    super(props);
+    console.log(props);
+    this.state = {
+      documentId: "",
+      documentTitle: "",
+      password: "",
+      ownerId: "",
+      body: [],
+      collaborators: [],
+      endpoint: "http://localhost:5000"
+    };
+  }
 
-	async componentDidMount() {
-		const link = "http://localhost:5000/docs/" + this.props.match.params.docId;
-		console.log("component did mount");
-		const responseNoJson = await fetch(link, {
-			credentials: "include",
-			mode: "cors",
-			method: "GET",
-			headers: {
-				Accept: "application/json",
-				"Content-Type": "application/json",
-			},
-		});
-		const response = await responseNoJson.json();
-		if (response.success) {
-			this.setDocProps(response.data);
-		}
-	}
+  async componentDidMount() {
+    const responseNoJson = await fetch(
+      `http://localhost:5000/docs/${this.props.match.params.docId}`,
+      {
+        credentials: "include",
+        mode: "cors",
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        }
+      }
+    );
+    const response = await responseNoJson.json();
+    this.setState({
+      documentId: response.data._id,
+      documentTitle: response.data.title,
+      password: response.data.password,
+      ownerId: response.data.owner,
+      body: response.data.body,
+      collaborators: response.data.collaborators
+    });
+
+    const socket = socketIOClient(this.state.endpoint);
+    socket.emit("enterRoom", this.state.documentId);
+  }
 
 	setDocProps(response) {
 		console.log("this is the ", response);

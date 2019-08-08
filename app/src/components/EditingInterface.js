@@ -16,7 +16,6 @@ import { Editor, EditorState, RichUtils, Modifier, convertToRaw, convertFromRaw 
 import "../App.css";
 import { Map } from "immutable";
 import Dropdown from "react-bootstrap/Dropdown";
-import socketIOClient from "socket.io-client";
 
 class EditingInterface extends React.Component {
 	constructor(props) {
