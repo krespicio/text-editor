@@ -35,7 +35,7 @@ class EditingInterface extends React.Component {
       this.onChange(
         RichUtils.toggleInlineStyle(this.state.editorState, e.target.name)
       );
-      console.log(e.target.name);
+      // console.log(e.target.name);
     };
 
 }
@@ -72,7 +72,7 @@ class EditingInterface extends React.Component {
     }
 
     let stringStyle = style.join(" ");
-    console.log(stringStyle);
+    // console.log(stringStyle);
     return stringStyle;
   }
 
@@ -205,13 +205,7 @@ class EditingInterface extends React.Component {
         </div>
 
         <div
-          style={{
-            border: "1px solid black",
-            height: "80%",
-            padding: "5px",
-						alignItems: "center",
-						justifyContent: "center"
-          }}
+          style={styles.textbox}
         >
           <Editor
             blockStyleFn={this.blockStyleFunc}
@@ -274,10 +268,11 @@ const styles = {
     flexDirection: "row-reverse"
   },
   textbox: {
-    border: "1px solid black",
-    height: "200px",
-    margin: "0 auto",
-		maxWidth: "900px"
+		border: "1px solid black",
+		height: "80%",
+		padding: "5px",
+		alignItems: "center",
+		justifyContent: "center"
   },
   controls: {
     fontFamily: "'Helvetica', sans-serif",

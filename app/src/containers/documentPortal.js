@@ -39,7 +39,7 @@ class DocumentPortal extends React.Component {
 					<div style={styles.user}>
 						<span style={{ marginRight: "15px" }}>
 							{" "}
-							Welcome to your Portal, {this.state.user}{" "}
+							Welcome to your Document Portal, {this.state.user}{" "}
 						</span>
 						<button onClick={() => this.logOut()}>
 							<Link to="/login">
