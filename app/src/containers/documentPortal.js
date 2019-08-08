@@ -37,9 +37,9 @@ class DocumentPortal extends React.Component {
 		});
 	}
 
-	createDoc(docName) {
+	async createDoc() {
 		// I just want to make a request so that the server logs us out
-		fetch("http://localhost:5000/createDoc", {
+		const yeet = await fetch("http://localhost:5000/createDoc", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -51,10 +51,22 @@ class DocumentPortal extends React.Component {
 				password: "temp",
 			}),
 		});
-		this.setState({
-			docs: this.state.docs.concat(this.state.docName),
-			docName: "",
-		});
+		if (yeet) {
+			const user = await fetch("http://localhost:5000/user", {
+				method: "GET",
+				credentials: "include",
+				redirect: "follow",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+			const userJSON = await user.json();
+			console.log("the user json is", userJSON.username);
+			this.setCurrentUser(userJSON.username, userJSON.documents);
+			this.setState({
+				docName: "",
+			});
+		}
 	}
 
 	render() {
@@ -94,7 +106,9 @@ class DocumentPortal extends React.Component {
 						<h3 style={styles.title}> My Documents </h3>
 						<ul>
 							{this.state.docs.map(doc => (
-								<li>{doc.title}</li>
+								<li>
+									<Link to={"/doc/" + doc._id}>{doc.title}</Link>
+								</li>
 							))}
 						</ul>
 					</div>
