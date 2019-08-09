@@ -59,7 +59,8 @@ class Document extends React.Component {
       ownerId: response.data.owner,
       body: response.data.body,
       collaborators: response.data.collaborators,
-      loggedinUser: response.loggedinUser
+      loggedinUser: response.loggedinUser,
+      showInterface: true
     });
 
     // this.setState({

@@ -11,7 +11,7 @@ class DocumentPortal extends React.Component {
       username: "",
       docs: [],
       docName: "",
-      endpoint: "http://localhost:5000"
+      endpoint: "http://localhost:5000",
       zigs: []
     };
   }
