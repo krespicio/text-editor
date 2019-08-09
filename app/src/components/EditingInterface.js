@@ -21,12 +21,15 @@ import {
   convertFromRaw,
   getDefaultKeyBinding,
   KeyBindingUtil,
+  SelectionState, 
+  forceSelection,
   DefaultDraftBlockRenderMap
 } from "draft-js";
 import "../App.css";
 import Immutable, { Map } from "immutable";
 import Dropdown from "react-bootstrap/Dropdown";
-import socketIOClient from "socket.io-client";
+import io from "socket.io-client";
+const socket = io('localhost:5000');
 
 class EditingInterface extends React.Component {
   constructor(props) {
@@ -38,8 +41,21 @@ class EditingInterface extends React.Component {
       search: "",
       replace: ""
     };
+<<<<<<< HEAD
+    this.onChange = editorState => {
+		// this.setState({ editorState });
+		// console.log(convertToRaw(editorState.getCurrentContent()));
+		// if (JSON.stringify(convertToRaw(editorState.getCurrentContent())) != JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent()))) {
+		// if (JSON.stringify(editorState.getCurrentContent().getEntityMap()) != JSON.stringify(this.state.editorState.getCurrentContent().getEntityMap())) {
+			socket.emit('SENDTEXT', 
+			{content: convertToRaw(editorState.getCurrentContent()), selection: JSON.stringify((editorState.getSelection()))} );
+		// }
+
+	};
+=======
 		this.editor = null;
     this.onChange = editorState => this.setState({ editorState });
+>>>>>>> 4a3df5d1eba9f989f33358782810d0b060d3b7ee
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
     this.focus = () => this.editor.focus();
     this._onClick = e => {
@@ -171,11 +187,28 @@ class EditingInterface extends React.Component {
     );
   }
 
+  //forceSelection 
+//   uppdateContest - EditorSTate (convertToRaw )
+//   setState(forceSelection(content, ))
+
   async componentDidMount(props) {
-    this.loadPrevious();
+	this.loadPrevious();
+	socket.on('RECEIVETEXT', function(data){
+		console.log('received text');
+		var selectionState = SelectionState.createEmpty();
+		var updatedSelection = selectionState.merge(JSON.parse((data.selection)));
+		let newState = EditorState.forceSelection(
+			EditorState.createWithContent(convertFromRaw(data.content)),
+			updatedSelection
+		);
+		this.setState({
+			editorState: newState
+		  });
+	}.bind(this));
   }
 
   async loadPrevious() {
+	console.log('loading prev...');
     const link = "http://localhost:5000/docs/" + this.props.id + "/getBody";
 
     const response = await fetch(link, {
@@ -189,7 +222,8 @@ class EditingInterface extends React.Component {
         bodyId: this.props.bodyId
       })
     });
-    const responseJSON = await response.json();
+	const responseJSON = await response.json();
+	console.log('responseJSON: ',responseJSON);
     if (responseJSON.data) {
       const rawContent = responseJSON.data.content;
       const parsedContent = JSON.parse(rawContent);

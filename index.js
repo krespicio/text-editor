@@ -152,11 +152,21 @@ io.on("connection", socket => {
     }
     users.get(socket.docId).push(obj.loggedinUser);
 
+<<<<<<< HEAD
+  socket.on("SENDTEXT", function(data){
+    console.log('received text!', data);
+    io.emit('RECEIVETEXT', data); 
+  });
+
+  socket.on("leaveRoom", function(docId) {
+    socket.leave(docId);
+=======
     socket.broadcast.emit("joined", {
       message: obj.loggedinUser + " has joined!!!!",
       users: users.get(socket.docId)
     });
     socket.emit("users", { users: users.get(socket.docId) });
+>>>>>>> 4a3df5d1eba9f989f33358782810d0b060d3b7ee
   });
 
   //   socket.on("joinAlert", loggedinUser => {
