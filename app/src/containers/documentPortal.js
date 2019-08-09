@@ -38,7 +38,9 @@ class DocumentPortal extends React.Component {
 	}
 
 	async createDoc() {
-		// I just want to make a request so that the server logs us out
+		// We need to sanatize data still
+		const password = prompt("Enter the password of the doc");
+
 		const yeet = await fetch("http://localhost:5000/createDoc", {
 			method: "POST",
 			headers: {
@@ -48,7 +50,7 @@ class DocumentPortal extends React.Component {
 			credentials: "include",
 			body: JSON.stringify({
 				title: this.state.docName,
-				password: "temp",
+				password,
 			}),
 		});
 		if (yeet) {
@@ -68,6 +70,7 @@ class DocumentPortal extends React.Component {
 			});
 		}
 	}
+
 	render() {
 		console.log(this.state.username);
 		return (
