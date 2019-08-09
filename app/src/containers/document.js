@@ -103,7 +103,6 @@ class Document extends React.Component {
 						<h6> ID: {this.state.documentId} </h6>
 					</div>
 					<div>
-						<h1>{this.state.showInterface} hey</h1>
 						{this.state.showInterface && (
 							<EditingInterface
 								id={this.state.documentId}

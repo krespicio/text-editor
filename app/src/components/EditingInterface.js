@@ -33,7 +33,6 @@ class EditingInterface extends React.Component {
             //this is for the bold, italic...
             e.preventDefault();
             this.onChange(RichUtils.toggleInlineStyle(this.state.editorState, e.target.name));
-            // console.log(e.target.name);
         };
 				this._onBoldClick = e => {
       e.preventDefault();
@@ -75,7 +74,6 @@ class EditingInterface extends React.Component {
         const type = contentBlock.getType();
         const alignment = contentBlock.getData().get("alignment");
         let style = [];
-        // console.log(style);
         if (alignment === "LEFT") {
             style.push("left");
         }
@@ -93,7 +91,6 @@ class EditingInterface extends React.Component {
         }
 
         let stringStyle = style.join(" ");
-        console.log(stringStyle);
         return stringStyle;
     }
 
@@ -119,13 +116,10 @@ class EditingInterface extends React.Component {
 
     async componentDidMount(props) {
         this.loadPrevious();
-        console.log("These are props things", this.state.props);
     }
 
     async loadPrevious() {
         const link = "http://localhost:5000/docs/" + this.props.id + "/getBody";
-        console.log("this is in load previous:", this.props.id);
-        console.log("you might be a dumby?:", this.props.bodyId);
 
         const response = await fetch(link, {
             method: "POST",
@@ -142,7 +136,6 @@ class EditingInterface extends React.Component {
         if (responseJSON.data) {
             const rawContent = responseJSON.data.content;
             const parsedContent = JSON.parse(rawContent);
-            console.log(parsedContent);
             this.setState({
                 editorState: EditorState.createWithContent(convertFromRaw(parsedContent)),
             });
@@ -151,11 +144,8 @@ class EditingInterface extends React.Component {
 
     async handleSave() {
         const link = "http://localhost:5000/docs/" + this.props.id + "/save";
-        console.log(this.props);
         const contentState = this.state.editorState.getCurrentContent();
         const content = JSON.stringify(convertToRaw(contentState));
-        console.log(content);
-        console.log(link);
         const response = await fetch(link, {
             method: "POST",
             headers: {
@@ -167,9 +157,6 @@ class EditingInterface extends React.Component {
                 content,
             }),
         });
-        // const responseJSON = await response.json();
-        // console.log(responseJSON);
-        console.log(await response.text());
     }
 
     render() {
