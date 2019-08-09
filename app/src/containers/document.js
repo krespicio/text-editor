@@ -60,6 +60,7 @@ class Document extends React.Component {
 			body: response.data.body,
 			collaborators: response.data.collaborators,
 			loggedinUser: response.loggedinUser,
+			showInterface: true,
 		});
 
 		// this.setState({
