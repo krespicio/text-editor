@@ -9,7 +9,7 @@ import socketIOClient from "socket.io-client";
 class Document extends React.Component {
 	constructor(props) {
 		super(props);
-		console.log(props);
+
 		this.state = {
 			documentId: "",
 			documentTitle: "",
@@ -18,8 +18,24 @@ class Document extends React.Component {
 			body: [],
 			collaborators: [],
 			endpoint: "http://localhost:5000",
+			presentMembers: [],
+			loggedinUser: "",
 			showInterface: false,
 		};
+
+		this.socket = socketIOClient(this.state.endpoint);
+		this.socket.on("joined", obj => {
+			this.setState({
+				presentMembers: obj.users,
+			});
+			alert(obj.message);
+		});
+		this.socket.on("users", obj => {
+			console.log(obj);
+			this.setState({
+				presentMembers: obj.users,
+			});
+		});
 	}
 
 	async componentDidMount() {
@@ -43,11 +59,32 @@ class Document extends React.Component {
 			ownerId: response.data.owner,
 			body: response.data.body,
 			collaborators: response.data.collaborators,
-			showInterface: true,
+			loggedinUser: response.loggedinUser,
 		});
 
-		const socket = socketIOClient(this.state.endpoint);
-		socket.emit("enterRoom", this.state.documentId);
+		// this.setState({
+		//   endpoint: `http://localhost:5000`
+		// });
+
+		this.socket.emit("enterRoom", {
+			documentId: this.state.documentId,
+			loggedinUser: this.state.loggedinUser,
+		});
+		console.log("send enter room as: " + this.state.loggedinUser);
+		// this.setState({
+		//   presentMembers: this.state.presentMembers.concat(this.state.loggedinUser)
+		// });
+
+		// socket.on("roomEntered", function(loggedinUser) {
+		//   console.log(socket);
+		//   socket.emit("joinAlert", loggedinUser);
+		// });
+	}
+
+	componentWillUnmount() {
+		// this.socket.emit("leaveRoom");
+		// this.socket.removeAllListeners();
+		this.socket.close();
 	}
 
 	setDocProps(response) {
@@ -110,6 +147,12 @@ class Document extends React.Component {
 							/>
 						)}
 					</div>
+					<div>Current users present: </div>
+					<ul>
+						{this.state.presentMembers.map(user => (
+							<li>{user}</li>
+						))}
+					</ul>
 					{this.state.showInterface && <History id={this.state.documentId} />}
 				</div>
 			</div>

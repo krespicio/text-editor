@@ -43,7 +43,6 @@ export default function Login() {
           alignItems: "center",
           backgroundImage: `url("https://media.giphy.com/media/xUPGcAq8idp4tCSMYE/giphy.gif")`,
           backgroundPosition: "center"
-
         }}
       >
         <div style={styles.container}>
@@ -77,7 +76,13 @@ export default function Login() {
                 />
               </div>
             </div>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
               <input
                 style={{ width: "30%" }}
                 className="ghost-button"
