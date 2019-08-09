@@ -27,6 +27,11 @@ class DocumentPortal extends React.Component {
 		const userJSON = await user.json();
 		console.log("the user json is", userJSON.username);
 		this.setCurrentUser(userJSON.username, userJSON.documents);
+
+		// this.setState({
+		// 	username: userJSON.username,
+		// 	docs: userJSON.documents,
+		// });
 	}
 
 	setCurrentUser(username, docs) {

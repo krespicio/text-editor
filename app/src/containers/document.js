@@ -110,7 +110,7 @@ class Document extends React.Component {
 							/>
 						)}
 					</div>
-					{/* <History id={this.state.documentId} /> */}
+					{this.state.showInterface && <History id={this.state.documentId} />}
 				</div>
 			</div>
 		);
