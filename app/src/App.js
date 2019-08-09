@@ -6,6 +6,7 @@ import Login from "./components/login.js";
 import EditingInterface from "./components/EditingInterface";
 import Signup from "./components/signup.js";
 
+
 class App extends React.Component {
 	constructor() {
 		super();
@@ -13,10 +14,13 @@ class App extends React.Component {
 			endpoint: "http://localhost:5000",
 		};
 	}
+
 }
 
 
-  //     componentDidMount() {
+
+
+ //     componentDidMount() {
   // 	  const socket = socketIOClient(this.state.endpoint);
   // 	  socket.on('save', )
   //     }

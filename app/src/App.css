@@ -43,3 +43,12 @@
 .right {
   text-align: right
 }
+/* div#root{
+  background-color: rgba(238, 124, 149, 1.0);
+}
+html{
+  background-color: rgba(238, 124, 149, 1.0);
+} */
+.signup-page {
+  background-color: rgba(238, 124, 149, 1.0);
+}
