@@ -38,30 +38,30 @@ class Document extends React.Component {
 		});
 	}
 
-  async componentDidMount() {
-    const responseNoJson = await fetch(
-      `http://localhost:5000/docs/${this.props.match.params.docId}`,
-      {
-        credentials: "include",
-        mode: "cors",
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        }
-      }
-    );
-    const response = await responseNoJson.json();
-    this.setState({
-      documentId: response.data._id,
-      documentTitle: response.data.title,
-      password: response.data.password,
-      ownerId: response.data.owner,
-      body: response.data.body,
-      collaborators: response.data.collaborators,
-      loggedinUser: response.loggedinUser,
-      showInterface: true
-    });
+	async componentDidMount() {
+		const responseNoJson = await fetch(
+			`http://localhost:5000/docs/${this.props.match.params.docId}`,
+			{
+				credentials: "include",
+				mode: "cors",
+				method: "GET",
+				headers: {
+					Accept: "application/json",
+					"Content-Type": "application/json",
+				},
+			}
+		);
+		const response = await responseNoJson.json();
+		this.setState({
+			documentId: response.data._id,
+			documentTitle: response.data.title,
+			password: response.data.password,
+			ownerId: response.data.owner,
+			body: response.data.body,
+			collaborators: response.data.collaborators,
+			loggedinUser: response.loggedinUser,
+			showInterface: true,
+		});
 
 		// this.setState({
 		//   endpoint: `http://localhost:5000`
