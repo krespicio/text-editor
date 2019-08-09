@@ -10,7 +10,8 @@ class DocumentPortal extends React.Component {
     this.state = {
       username: "",
       docs: [],
-      docName: ""
+      docName: "",
+      endpoint: "http://localhost:5000"
     };
   }
 
@@ -26,6 +27,7 @@ class DocumentPortal extends React.Component {
     const userJSON = await user.json();
     console.log("the user json is", userJSON.username);
     this.setCurrentUser(userJSON.username, userJSON.documents);
+    localStorage.setItem("currentUser", this.state.username);
   }
 
   setCurrentUser(username, docs) {
@@ -69,9 +71,9 @@ class DocumentPortal extends React.Component {
     }
   }
 
-
   render() {
     console.log(this.state.username);
+
     return (
       <div style={styles.container} name="documentPortal" id="documentPortal">
         <div style={styles.content}>
@@ -108,7 +110,7 @@ class DocumentPortal extends React.Component {
             <ul>
               {this.state.docs.map(doc => (
                 <li key={doc._id}>
-                  <Link to={"/doc/" + doc._id}>{doc.title}</Link>
+                  <Link to={"/docs/" + doc._id}>{doc.title}</Link>
                 </li>
               ))}
             </ul>
