@@ -101,31 +101,37 @@ router.get("/docs/:docId", function(req, res) {
 });
 
 router.post("/docs/:docId/addCollab", function(req, res) {
-  let collaborator = req.body.collabId;
+  // let collaborator = req.body.collabId;
   let docId = req.params.docId;
 
-  Document.findOne({ _id: docId }, function(err, result) {
-    if (err) {
-      res.json({ success: false, error: err });
-    }
-    if (!err) {
-      console.log(result);
-      result.collaborators.push(collaborator);
-      result.save(function(err, success) {
+  User.findOne({ username: req.body.username }, function(err, userToBeAdded) {
+    if (userToBeAdded) {
+      console.log("found user");
+      const newUserId = userToBeAdded._id;
+      Document.findOne({ _id: docId }, function(err, result) {
         if (err) {
           res.json({ success: false, error: err });
         }
-
         if (!err) {
-          console.log("successfully added a collaborator");
-          User.findOne({ _id: collaborator }, function(err, user) {
+          console.log(result);
+          result.collaborators.push(newUserId);
+          result.save(function(err, success) {
             if (err) {
               res.json({ success: false, error: err });
             }
+
             if (!err) {
-              user.documents.push(result);
-              user.save();
-              res.json({ success: true, error: "" });
+              console.log("successfully added a collaborator");
+              User.findOne({ _id: newUserId }, function(err, user) {
+                if (err) {
+                  res.json({ success: false, error: err });
+                }
+                if (!err) {
+                  user.documents.push(result);
+                  user.save();
+                  res.json({ success: true, error: "" });
+                }
+              });
             }
           });
         }
@@ -189,6 +195,19 @@ router.post("/docs/:docId/getBody", (req, res) => {
       res.json({ sucess: true, error: "", data: bod });
     }
   });
+});
+
+router.get("/docs/:docId/allBodies", (req, res) => {
+  const docId = req.params.docId;
+  Document.findOne({ _id: docId })
+    .populate("body")
+    .exec((err, bods) => {
+      if (err) {
+        res.json({ sucess: false, error: err });
+      } else {
+        res.json({ sucess: true, error: "", data: bods });
+      }
+    });
 });
 
 module.exports = router;

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
+import Button from "react-bootstrap/Button";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -35,52 +36,88 @@ export default function Login() {
     return <Redirect to="/portal" />;
   } else {
     return (
-      <div style={styles}>
-        <h3 style={{ textAlign: "center" }}>Login</h3>
-        {errorText && <p>{errorText}</p>}
-        <form className="loginForm" onSubmit={e => postLogin(e)}>
-          <div className="form-group row">
-            <label className="col-sm-2 col-form-label">Username </label>
-            <div className="col-sm-10">
-              <input
-                className="form-control"
-                type="text"
-                name="email"
-                value={username}
-                placeholder="username"
-                onChange={e => setUsername(e.target.value)}
-              />
+      <div
+        style={{
+          display: "flex",
+          height: "100vh",
+          alignItems: "center",
+          backgroundImage: `url("https://media.giphy.com/media/xUPGcAq8idp4tCSMYE/giphy.gif")`,
+          backgroundPosition: "center"
+        }}
+      >
+        <div style={styles.container}>
+          <h3 style={{ textAlign: "center" }}>Login</h3>
+          {errorText && <p>{errorText}</p>}
+          <br />
+          <form className="loginForm" onSubmit={e => postLogin(e)}>
+            <div className="form-group row">
+              <label className="col-sm-4 col-form-label">Username </label>
+              <div className="col-sm-8">
+                <input
+                  className="form-control"
+                  type="text"
+                  name="email"
+                  value={username}
+                  placeholder="username"
+                  onChange={e => setUsername(e.target.value)}
+                />
+              </div>
             </div>
-          </div>
-          <div className="form-group row">
-            <label className="col-sm-2 col-form-label">Password </label>
-            <div className="col-sm-10">
-              <input
-                className="form-control"
-                type="password"
-                name="password"
-                value={password}
-                placeholder="password"
-                onChange={e => setPassword(e.target.value)}
-              />
+            <div class="form-group row">
+              <label className="col-sm-4 col-form-label">Password </label>
+              <div className="col-sm-8">
+                <input
+                  className="form-control"
+                  type="password"
+                  name="password"
+                  value={password}
+                  placeholder="password"
+                  onChange={e => setPassword(e.target.value)}
+                />
+              </div>
             </div>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <input style={{ width: "50%" }} type="submit" value="Login" />
-            <Link to="/signup" style={{ textAlign: "right" }}>
-              SignUp Here!
-            </Link>
-          </div>
-        </form>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
+              <input
+                style={{ width: "30%" }}
+                className="ghost-button"
+                type="submit"
+                value="Login"
+              />
+
+              <Link
+                to="/signup"
+                style={{ textAlign: "right", alignItems: "center" }}
+              >
+                <Button variant="secondary" size="md">
+                  SignUp Here!
+                </Button>
+              </Link>
+            </div>
+          </form>
+        </div>
       </div>
     );
   }
 }
 
 const styles = {
-  justifyContent: "center",
-  alignItems: "center",
-  height: "100%",
-  display: "flex",
-  flexDirection: "column"
+  container: {
+    maxWidth: "50%",
+    margin: "0 auto",
+    border: "0.5px solid gray",
+    borderRadius: "10px",
+    padding: "30px",
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    backgroundColor: "pink"
+  }
 };

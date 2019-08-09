@@ -18,16 +18,19 @@ import {
   RichUtils,
   Modifier,
   convertToRaw,
-  convertFromRaw
+  convertFromRaw,
+  getDefaultKeyBinding,
+  KeyBindingUtil,
+  DefaultDraftBlockRenderMap
 } from "draft-js";
 import "../App.css";
-import { Map } from "immutable";
+import Immutable, { Map } from "immutable";
 import Dropdown from "react-bootstrap/Dropdown";
+import socketIOClient from "socket.io-client";
 
 class EditingInterface extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
     // this.editor = React.createRef();
     this.state = {
       editorState: EditorState.createEmpty(),
@@ -42,11 +45,45 @@ class EditingInterface extends React.Component {
       this.onChange(
         RichUtils.toggleInlineStyle(this.state.editorState, e.target.name)
       );
-      // console.log(e.target.name);
+    };
+    this._onBoldClick = e => {
+      e.preventDefault();
+      this.onChange(
+        RichUtils.toggleInlineStyle(this.state.editorState, "BOLD")
+      );
+    };
+    this._onItalicClick = e => {
+      e.preventDefault();
+      this.onChange(
+        RichUtils.toggleInlineStyle(this.state.editorState, "ITALIC")
+      );
+    };
+    this._onUnderlineClick = e => {
+      e.preventDefault();
+      this.onChange(
+        RichUtils.toggleInlineStyle(this.state.editorState, "UNDERLINE")
+      );
+    };
+    this._onCodeClick = e => {
+      e.preventDefault();
+      this.onChange(
+        RichUtils.toggleInlineStyle(this.state.editorState, "CODE")
+      );
     };
   }
 
+  keyBindingFn(e) {
+    if (e.keyCode === 83 && KeyBindingUtil.hasCommandModifier(e)) {
+      return "save";
+    }
+    return getDefaultKeyBinding(e);
+  }
+
   handleKeyCommand(command, editorState) {
+    if (command === "save") {
+      this.handleSave();
+      return "handled";
+    }
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
       this.onChange(newState);
@@ -59,7 +96,6 @@ class EditingInterface extends React.Component {
     const type = contentBlock.getType();
     const alignment = contentBlock.getData().get("alignment");
     let style = [];
-    // console.log(style);
     if (alignment === "LEFT") {
       style.push("left");
     }
@@ -77,9 +113,20 @@ class EditingInterface extends React.Component {
     }
 
     let stringStyle = style.join(" ");
-    console.log(stringStyle);
     return stringStyle;
   }
+
+  // myBlockRenderer(contentBlock) {
+  //   const type = contentBlock.getType();
+  //   if (type === "ordered-list-item") {
+  //     return {
+  //       wrapper: <MyCustomBlock />,
+  //       props: {
+  //         alignment: contentBlock.getData().get("alignment")
+  //       }
+  //     };
+  //   }
+  // }
 
   styleWholeSelectedBlocksModifier(editorState, style) {
     let currentContent = editorState.getCurrentContent();
@@ -106,14 +153,11 @@ class EditingInterface extends React.Component {
   }
 
   async componentDidMount(props) {
-    // this.loadPrevious();
-    console.log("These are props things", this.state.props);
+    this.loadPrevious();
   }
 
   async loadPrevious() {
-    const link = "http://localhost:5000/docs/" + this.props.id + "getBody";
-    console.log("this is in load previous:", this.props.id);
-    console.log("you might be a dumby?:", this.props.bodyId);
+    const link = "http://localhost:5000/docs/" + this.props.id + "/getBody";
 
     const response = await fetch(link, {
       method: "POST",
@@ -130,7 +174,6 @@ class EditingInterface extends React.Component {
     if (responseJSON.data) {
       const rawContent = responseJSON.data.content;
       const parsedContent = JSON.parse(rawContent);
-      console.log(parsedContent);
       this.setState({
         editorState: EditorState.createWithContent(
           convertFromRaw(parsedContent)
@@ -141,11 +184,9 @@ class EditingInterface extends React.Component {
 
   async handleSave() {
     const link = "http://localhost:5000/docs/" + this.props.id + "/save";
-    console.log(this.props);
     const contentState = this.state.editorState.getCurrentContent();
     const content = JSON.stringify(convertToRaw(contentState));
-    console.log(content);
-    console.log(link);
+
     const response = await fetch(link, {
       method: "POST",
       headers: {
@@ -157,18 +198,9 @@ class EditingInterface extends React.Component {
         content
       })
     });
-    // const responseJSON = await response.json();
-    // console.log(responseJSON);
-    console.log(await response.text());
   }
 
   render() {
-    const textStyles = [
-      { name: "BOLD", icon: <FaBold /> },
-      { name: "ITALIC", icon: <FaItalic /> },
-      { name: "UNDERLINE", icon: <FaUnderline /> },
-      { name: "CODE", icon: <FaEdge /> }
-    ];
     const paragraphStyles = [
       { name: "LEFT", icon: <FaAlignLeft /> },
       { name: "CENTER", icon: <FaAlignCenter /> },
@@ -236,15 +268,35 @@ class EditingInterface extends React.Component {
             </Dropdown>
           </div>
           <div id="other buttons" style={{ justifyContent: "flex-end" }}>
-            {textStyles.map(style => (
-              <button
-                key={style.name}
-                onMouseDown={this._onClick.bind(this)}
-                name={style.name}
-              >
-                {style.icon}
-              </button>
-            ))}
+            <button
+              key={"BOLD"}
+              onMouseDown={this._onBoldClick.bind(this)}
+              name={"BOLD"}
+            >
+              <FaBold />
+            </button>
+            <button
+              key={"UNDERLINE"}
+              onMouseDown={this._onUnderlineClick.bind(this)}
+              name={"UNDERLINE"}
+            >
+              <FaUnderline />
+            </button>
+            <button
+              key={"ITALIC"}
+              onMouseDown={this._onItalicClick.bind(this)}
+              name={"ITALIC"}
+            >
+              <FaItalic />
+            </button>
+            <button
+              key={"CODE"}
+              onMouseDown={this._onCodeClick.bind(this)}
+              name={"CODE"}
+            >
+              <FaEdge />
+            </button>
+
             {paragraphStyles.map(style => {
               return (
                 <button
@@ -277,9 +329,11 @@ class EditingInterface extends React.Component {
         <div style={styles.textbox}>
           <Editor
             blockStyleFn={this.blockStyleFunc}
+            // blockRendererFn={this.myBlockRenderer}
             editorState={this.state.editorState}
             onChange={this.onChange}
             handleKeyCommand={this.handleKeyCommand}
+            keyBindingFn={this.keyBindingFn}
             ref={Editor => Editor && Editor.focus()}
             customStyleMap={styleMap}
           />
