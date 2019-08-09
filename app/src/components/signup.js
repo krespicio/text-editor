@@ -104,7 +104,7 @@ const styles = {
 	   display: "flex",
 	   flexDirection: "column",
 		 backgroundImage: `url("https://media.giphy.com/media/xUPGcAq8idp4tCSMYE/giphy.gif")`,
- 	  backgroundRepeat  : 'no-repeat',
+ 	  backgroundRepeat  : 'repeat',
  	  backgroundPosition: 'center',
 	}
 };
