@@ -121,23 +121,51 @@ mongoose.connection.on("error", function(err) {
 //socket
 const server = http.createServer(app);
 const io = socketIO(server);
+// const users = [];
+const users = new Map();
 
 io.on("connection", socket => {
   console.log("User connected");
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
+    // let index = users.indexOf(socket.username);
+    // if (index !== -1) {
+    //   users.splice(index, 1);
+    // }
+    if (users.get(socket.docId)) {
+      let index = users.get(socket.docId).indexOf(socket.username);
+      if (index !== -1) {
+        users.get(socket.docId).splice(index, 1);
+      }
+    }
   });
 
-  socket.on("enterRoom", function(docId) {
-    socket.join(docId);
-    console.log("room entered");
-    socket.emit("roomEntered", docId);
+  socket.on("enterRoom", function(obj) {
+    socket.join(obj.documentId);
+
+    socket.docId = obj.documentId;
+    socket.username = obj.loggedinUser;
+
+    if (users.get(socket.docId) === undefined) {
+      users.set(socket.docId, []);
+    }
+    users.get(socket.docId).push(obj.loggedinUser);
+
+    socket.broadcast.emit("joined", {
+      message: obj.loggedinUser + " has joined!!!!",
+      users: users.get(socket.docId)
+    });
+    socket.emit("users", { users: users.get(socket.docId) });
   });
 
-  socket.on("leaveRoom", function(docId) {
-    socket.leave(docId);
-  });
+  //   socket.on("joinAlert", loggedinUser => {
+  //     alert(loggedinUser + " has joined!!!!!");
+  //   });
+
+  //   socket.on("leaveRoom", function(docId) {
+  //     socket.leave(docId);
+  //   });
 });
 
 app.use("/", auth(passport));

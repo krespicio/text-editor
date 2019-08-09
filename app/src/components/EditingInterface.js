@@ -73,6 +73,7 @@ class EditingInterface extends React.Component {
         RichUtils.toggleInlineStyle(this.state.editorState, "CODE")
       );
     };
+
     this.onChangeSearch = e => {
       this.setState({
         search: e.target.value
@@ -389,7 +390,6 @@ class EditingInterface extends React.Component {
 						</button>
 					</span>
          </div>
-
       </div>
     );
   }

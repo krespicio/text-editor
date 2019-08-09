@@ -11,6 +11,7 @@ class DocumentPortal extends React.Component {
       username: "",
       docs: [],
       docName: "",
+      endpoint: "http://localhost:5000"
       zigs: []
     };
   }
@@ -27,6 +28,7 @@ class DocumentPortal extends React.Component {
     const userJSON = await user.json();
     console.log("the user json is", userJSON.username);
     this.setCurrentUser(userJSON.username, userJSON.documents);
+    localStorage.setItem("currentUser", this.state.username);
   }
 
   setCurrentUser(username, docs) {
@@ -80,6 +82,7 @@ class DocumentPortal extends React.Component {
 
   render() {
     console.log(this.state.username);
+
     return (
       <div style = {{backgroundColor: '#87d3f8', display: 'flex', height: '100vh', alignItems: 'center'}}>
       <div style={styles.container} name="documentPortal" id="documentPortal">
