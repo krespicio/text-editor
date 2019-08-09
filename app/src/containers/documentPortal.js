@@ -16,6 +16,7 @@ class DocumentPortal extends React.Component {
 		};
 	}
 
+
 	// async componentDidMount() {
 	// 	const user = await fetch("http://localhost:5000/user", {
 	// 		method: "GET",
