@@ -135,6 +135,11 @@ io.on("connection", socket => {
     socket.emit("roomEntered", docId);
   });
 
+  socket.on("SENDTEXT", function(data){
+    console.log('received text!', data);
+    io.emit('RECEIVETEXT', data); 
+  });
+
   socket.on("leaveRoom", function(docId) {
     socket.leave(docId);
   });
