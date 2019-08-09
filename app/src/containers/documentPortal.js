@@ -11,6 +11,7 @@ class DocumentPortal extends React.Component {
 			username: "",
 			docs: [],
 			docName: "",
+			zigs: [],
 		};
 	}
 
@@ -71,6 +72,12 @@ class DocumentPortal extends React.Component {
 		}
 	}
 
+	addZig() {
+		this.setState({
+			zigs: this.state.zigs.concat("yee"),
+		});
+	}
+
 	render() {
 		console.log(this.state.username);
 		return (
@@ -81,10 +88,7 @@ class DocumentPortal extends React.Component {
 							Welcome to your Portal, {this.state.username}{" "}
 						</span>
 						<button onClick={this.logOut}>
-							<Link to="/login">
-								<FaRegUser />
-								Log Out
-							</Link>
+							<Link to="/login">Log Out</Link>
 						</button>
 					</div>
 					<input
@@ -104,7 +108,7 @@ class DocumentPortal extends React.Component {
 					<div style={styles.title}>
 						<h2> Document Portal </h2>
 					</div>
-          <br />
+					<br />
 					<div style={styles.documentsBox}>
 						<h3 style={styles.title}> My Documents </h3>
 						<ul>
@@ -122,6 +126,14 @@ class DocumentPortal extends React.Component {
 						style={{ width: "300px" }}
 					/>
 					<button>Add Shared Document</button>
+					<button onClick={this.addZig.bind(this)}>Add Zig</button>
+					{this.state.zigs.map(zig => (
+						<img
+							style={styles.zigzaggoon}
+							src={require(`../galarian_zigzaggoon.jpg`)}
+							alt=""
+						/>
+					))}
 				</div>
 			</div>
 		);
@@ -148,6 +160,10 @@ const styles = {
 	},
 	user: {
 		textAlign: "right",
+	},
+	zigzaggoon: {
+		width: "100px",
+		height: "100px",
 	},
 };
 
