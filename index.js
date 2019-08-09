@@ -121,20 +121,38 @@ mongoose.connection.on("error", function(err) {
 //socket
 const server = http.createServer(app);
 const io = socketIO(server);
+// const users = [];
+const users = new Map();
 
 io.on("connection", socket => {
   console.log("User connected");
 
   socket.on("disconnect", () => {
     console.log("user disconnected");
+    // let index = users.indexOf(socket.username);
+    // if (index !== -1) {
+    //   users.splice(index, 1);
+    // }
+    if (users.get(socket.docId)) {
+      let index = users.get(socket.docId).indexOf(socket.username);
+      if (index !== -1) {
+        users.get(socket.docId).splice(index, 1);
+      }
+    }
   });
 
-  socket.on("enterRoom", function(docId) {
-    socket.join(docId);
-    console.log("room entered");
-    socket.emit("roomEntered", docId);
-  });
+  socket.on("enterRoom", function(obj) {
+    socket.join(obj.documentId);
 
+    socket.docId = obj.documentId;
+    socket.username = obj.loggedinUser;
+
+    if (users.get(socket.docId) === undefined) {
+      users.set(socket.docId, []);
+    }
+    users.get(socket.docId).push(obj.loggedinUser);
+
+<<<<<<< HEAD
   socket.on("SENDTEXT", function(data){
     console.log('received text!', data);
     io.emit('RECEIVETEXT', data); 
@@ -142,7 +160,22 @@ io.on("connection", socket => {
 
   socket.on("leaveRoom", function(docId) {
     socket.leave(docId);
+=======
+    socket.broadcast.emit("joined", {
+      message: obj.loggedinUser + " has joined!!!!",
+      users: users.get(socket.docId)
+    });
+    socket.emit("users", { users: users.get(socket.docId) });
+>>>>>>> 4a3df5d1eba9f989f33358782810d0b060d3b7ee
   });
+
+  //   socket.on("joinAlert", loggedinUser => {
+  //     alert(loggedinUser + " has joined!!!!!");
+  //   });
+
+  //   socket.on("leaveRoom", function(docId) {
+  //     socket.leave(docId);
+  //   });
 });
 
 app.use("/", auth(passport));

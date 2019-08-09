@@ -31,40 +31,17 @@ import Dropdown from "react-bootstrap/Dropdown";
 import io from "socket.io-client";
 const socket = io('localhost:5000');
 
-// function OrderedListComponent(props) {
-//   console.log("eff");
-//   console.log(props);
-//   return <div className="orderedlist"> {props.children}</div>;
-// }
-// class MyCustomBlock extends React.Component {
-//   constructor(props) {
-//     super(props);
-//   }
-//
-//   render() {
-//     console.log(this.props);
-// 		console.log('rendering')
-// 		return <li>fuck</li>
-//     return (
-//       <div style={{ flex: "right", justifyContent: "center" }}>
-//         <ul className="MyCustomBlock">
-//           {/* here, this.props.children contains a <section> container, as that was the matching element */}
-//           {this.props.children}
-//         </ul>
-//       </div>
-//     );
-//   }
-// }
-
-
 class EditingInterface extends React.Component {
   constructor(props) {
     super(props);
     // this.editor = React.createRef();
     this.state = {
       editorState: EditorState.createEmpty(),
-      bold: false
+      bold: false,
+      search: "",
+      replace: ""
     };
+<<<<<<< HEAD
     this.onChange = editorState => {
 		// this.setState({ editorState });
 		// console.log(convertToRaw(editorState.getCurrentContent()));
@@ -75,6 +52,10 @@ class EditingInterface extends React.Component {
 		// }
 
 	};
+=======
+		this.editor = null;
+    this.onChange = editorState => this.setState({ editorState });
+>>>>>>> 4a3df5d1eba9f989f33358782810d0b060d3b7ee
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
     this.focus = () => this.editor.focus();
     this._onClick = e => {
@@ -83,7 +64,6 @@ class EditingInterface extends React.Component {
       this.onChange(
         RichUtils.toggleInlineStyle(this.state.editorState, e.target.name)
       );
-      // console.log(e.target.name);
     };
     this._onBoldClick = e => {
       e.preventDefault();
@@ -107,6 +87,22 @@ class EditingInterface extends React.Component {
       e.preventDefault();
       this.onChange(
         RichUtils.toggleInlineStyle(this.state.editorState, "CODE")
+      );
+    };
+
+    this.onChangeSearch = e => {
+      this.setState({
+        search: e.target.value
+      });
+    };
+    this.onChangeReplace = e => {
+      this.setState({
+        replace: e.target.value
+      });
+    };
+    this.onReplace = () => {
+      console.log(
+        `replacing "${this.state.search}" with "${this.state.replace}"`
       );
     };
   }
@@ -135,7 +131,6 @@ class EditingInterface extends React.Component {
     const type = contentBlock.getType();
     const alignment = contentBlock.getData().get("alignment");
     let style = [];
-    // console.log(style);
     if (alignment === "LEFT") {
       style.push("left");
     }
@@ -153,7 +148,6 @@ class EditingInterface extends React.Component {
     }
 
     let stringStyle = style.join(" ");
-    console.log(stringStyle);
     return stringStyle;
   }
 
@@ -233,7 +227,6 @@ class EditingInterface extends React.Component {
     if (responseJSON.data) {
       const rawContent = responseJSON.data.content;
       const parsedContent = JSON.parse(rawContent);
-	  console.log('setting prev state');
       this.setState({
         editorState: EditorState.createWithContent(
           convertFromRaw(parsedContent)
@@ -244,11 +237,9 @@ class EditingInterface extends React.Component {
 
   async handleSave() {
     const link = "http://localhost:5000/docs/" + this.props.id + "/save";
-    console.log(this.props);
     const contentState = this.state.editorState.getCurrentContent();
     const content = JSON.stringify(convertToRaw(contentState));
-    console.log(content);
-    console.log(link);
+
     const response = await fetch(link, {
       method: "POST",
       headers: {
@@ -260,9 +251,6 @@ class EditingInterface extends React.Component {
         content
       })
     });
-    // const responseJSON = await response.json();
-    // console.log(responseJSON);
-    console.log(await response.text());
   }
 
   render() {
@@ -399,11 +387,11 @@ class EditingInterface extends React.Component {
             onChange={this.onChange}
             handleKeyCommand={this.handleKeyCommand}
             keyBindingFn={this.keyBindingFn}
-            ref={Editor => Editor && Editor.focus()}
+            ref={Editor => this.editor = Editor}
             customStyleMap={styleMap}
           />
         </div>
-        <div style={styles.saveButton}>
+        <div style={styles.saveButton} name = "bottom-button">
           <button
             variant="success"
             size="sm"
@@ -420,7 +408,22 @@ class EditingInterface extends React.Component {
             <FaSave />
             Load
           </button>
-        </div>
+					<span className="search-and-replace">
+						<input
+							value={this.state.search}
+							onChange={this.onChangeSearch}
+							placeholder="Search..."
+						/>
+						<input
+							value={this.state.replace}
+							onChange={this.onChangeReplace}
+							placeholder="Replace..."
+						/>
+						<button onClick={this.onReplace}>
+							Replace
+						</button>
+					</span>
+         </div>
       </div>
     );
   }
@@ -461,7 +464,7 @@ const styleMap = {
 
 const styles = {
   saveButton: {
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     alignContent: "flex-end",
     flexDirection: "row-reverse"
   },

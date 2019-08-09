@@ -3,7 +3,12 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { Route, Link, Redirect, BrowserRouter as Router } from "react-router-dom";
+import {
+  Route,
+  Link,
+  Redirect,
+  BrowserRouter as Router
+} from "react-router-dom";
 import Login from "./components/login.js";
 import Document from "./containers/document.js";
 import Signup from "./components/signup.js";
@@ -11,12 +16,12 @@ import DocumentPortal from "./containers/documentPortal.js";
 import "bootstrap/dist/css/bootstrap.css";
 
 const routing = (
-	<Router>
-		<Route exact path="/login" component={Login} />
-		<Route exact path="/signup" component={Signup} />
-		<Route exact path="/portal" component={DocumentPortal} />
-		<Route path="/docs/:docId" component={Document} />
-	</Router>
+  <Router>
+    <Route exact path="/login" component={Login} />
+    <Route exact path="/signup" component={Signup} />
+    <Route exact path="/portal" component={DocumentPortal} />
+    <Route path="/docs/:docId" component={Document} />
+  </Router>
 );
 
 ReactDOM.render(routing, document.getElementById("root"));
