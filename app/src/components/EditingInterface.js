@@ -41,7 +41,6 @@ class EditingInterface extends React.Component {
       search: "",
       replace: ""
     };
-<<<<<<< HEAD
     this.onChange = editorState => {
 		// this.setState({ editorState });
 		// console.log(convertToRaw(editorState.getCurrentContent()));
@@ -52,10 +51,6 @@ class EditingInterface extends React.Component {
 		// }
 
 	};
-=======
-		this.editor = null;
-    this.onChange = editorState => this.setState({ editorState });
->>>>>>> 4a3df5d1eba9f989f33358782810d0b060d3b7ee
     this.handleKeyCommand = this.handleKeyCommand.bind(this);
     this.focus = () => this.editor.focus();
     this._onClick = e => {
